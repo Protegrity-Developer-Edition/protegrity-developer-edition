@@ -1,0 +1,8 @@
+{
+    "masking_char": "#",
+    "named_entity_map": {
+        "CREDIT_CARD": "CCN",
+        "DATE_TIME": "DATE"
+    },
+    "method": "redact"
+}

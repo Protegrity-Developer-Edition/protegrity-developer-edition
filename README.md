@@ -6,9 +6,17 @@ Welcome to the `protegrity-developer-edition` repository, part of the Protegrity
 
 This repository enables developers to:
 - Rapidly set up a local environment using Docker Compose.
-- Experiment with unstructured text classification and PII redaction.
+- Experiment with unstructured text classification, PII discovery, redaction, masking, and tokenization-like protection.
+- Experiment with semantic guardrails to secure GenAI applications using messaging risk scoring, conversation risk scoring, and PII scanning.
 - Integrate Protegrity APIs into GenAI and traditional applications.
 - Use sample applications and data to understand integration workflows.
+
+### Quick Links
+
+- [Prerequisites](#prerequisites)
+- [Setup steps for Linux and Windows](#setup-instructions-for-linux-and-windows)
+- [Setup steps for MacOS](#setup-instructions-for-macos)
+- If your setup is ready, [run the samples](#running-the-sample-applications)
 
 ## 📦 Repository Structure
 
@@ -18,30 +26,44 @@ This repository enables developers to:
 ├── CONTRIBUTIONS.md
 ├── LICENSE
 ├── README.md
-├── data-discovery
+├── docker-compose.yml                   # Orchestrates data discovery + semantic guardrail services
+├── data-discovery/                      # Low-level classification examples
 │   ├── sample-classification-commands.sh
 │   └── sample-classification-python.py
-├── docker-compose.yml
-└── samples
+├── semantic-guardrail/                  # GenAI security risk & PII multi-turn scanning examples
+│   ├── sample-guardrail-command.sh
+│   └── sample-guardrail-python.py
+└── samples/                             # High-level Python SDK samples
     ├── config.json
     ├── requirements.txt
-    ├── sample-app-find-and-redact.py
-    ├── sample-app-find.py
-    └── sample-data
-        └── sample-find-redact.txt
+    ├── sample-app-find.py               # Discover and list PII entities
+    ├── sample-app-find-and-redact.py    # Discover + redact or mask entities
+    ├── sample-app-find-and-protect.py   # Discover + protect entities (tokenize style)
+    ├── sample-app-find-and-unprotect.py # Unprotect protected entities
+    ├── sample-app-protection.py         # Direct protect / unprotect (CLI style)
+    └── sample-data/
+        ├── input.txt
+        ├── output-redact.txt            # Produced by redact workflow
+        ├── output-protect.txt           # Produced by protect workflow
+        └── (generated files ...)
 ```
 
 ## 🧰 Features
 
-- **Data Discovery**: REST-based classification of unstructured text using Data Discovery.
-- **Data Protection**: Integration with a sample Python application for redaction or masking.
-- **Sample App**: Demonstrates how to find and redact PII.
-- **Cross-platform**: Works on Linux, Windows, and MacOS.
+- **Data Discovery**: REST-based classification and entity detection of unstructured text.
+- **PII Discovery**: Enumerate detected entities with confidence scores.
+- **Redaction / Masking**: Replace detected entities (configurable masking char, mapping).
+- **Protection (Tokenization-like)**: Protect and unprotect specific data elements using `sample-app-protection.py` and combined find + protect sample.
+- **Semantic Guardrail**: Message and conversation level risk scoring + PII scanning for GenAI flows.
+- **Multi-turn Examples**: Use the curl and Python samples from the semantic guardrail directory.
+- **Configurable Samples**: Adjust behavior through `samples/config.json`.
+- **Cross-platform**: Works on Linux, MacOS, and Windows.
 
 ## 🛠️ Getting Started
 
 ### Prerequisites
-- [Python >= 3.9.23](https://www.python.org/downloads/)
+- [Python >= 3.12.11](https://www.python.org/downloads/)  
+  > **Note**: Ensure that the python command on your system points to a supported python3 version, for example, Python 3.12.11. You can verify this by running `python --version`. 
 - [pip](https://pip.pypa.io/en/stable/installation/)
 - [Python Virtual Environment](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/) 
 - Container management software:
@@ -49,10 +71,37 @@ This repository enables developers to:
     - For MacOS: [Docker Desktop](https://docs.docker.com/reference/cli/docker/) or Colima
 - [Docker Compose V2](https://docs.docker.com/compose/install/)
 - [Git](https://git-scm.com/downloads)
+- Optional: If the Developer Edition is already installed, then complete the following tasks:
+    - Back up any customized files.
+    - Stop any Developer Edition containers that are running using the `docker compose` command.
+    - Remove the `protegrity-developer-python` module using the `pip uninstall protegrity-developer-python` command.
 
-Linux and Windows users can proceed to [Setup Instructions](#setup-instructions).
+### Setup Instructions for Linux and Windows
 
-**Additional settings for MacOS**
+Complete the steps provided here to clone, install, find, and run the Developer Edition on Linux and Windows. For MacOS, proceed to [Setup Instructions for MacOS](#setup-instructions-for-macos).
+
+1.  Open a command prompt.
+2.  Clone the git repository.
+    ```
+    git clone https://github.com/Protegrity-Developer-Edition/protegrity-developer-edition.git
+    ```
+3.  Navigate to the `protegrity-developer-edition` directory in the cloned location.
+    >   **Note: After cloning switch to the pre-release-1.0.0 branch `git checkout pre-release-1.0.0`**
+4.  Start the services (classification + semantic guardrail) in background. The dependent containers are large; downloads may take time.
+    ```
+    docker compose up -d
+    ```
+    Based on your configuration use the `docker-compose up -d` command.
+5. Install the `protegrity-developer-python` module. It is recommended to install and activate the Python virtual environment before installing the module.
+    ```
+    pip install --no-cache-dir --force-reinstall --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple protegrity-developer-python==1.0.0rc1
+    ```
+    The installation completes and the success message is displayed.
+    >   **Note: The above pip install command will change to `pip install protegrity-developer-python` once the python module is pushed to Prod PyPi.**
+
+After setup, proceed to [Running the Sample Applications](#running-the-sample-applications).
+
+### Setup Instructions for MacOS
   
 MacOS requires additional steps for Docker and for systems with Apple Silicon chips. Complete the following steps before using Developer Edition. 
 
@@ -132,79 +181,224 @@ MacOS requires additional steps for Docker and for systems with Apple Silicon ch
         ```
         ~/.docker/config.json
         ```
-    3. Add the following paramater.
+    3. Add the following parameter.
         ```
         "default-platform": "linux/amd64"
         ```
     4. Save and close the file.
-    5. Run the `docker compose up -d` from the `protegrity-developer-edition` directory if already cloned, else proceed to Setup Instructions.
+    5. Run the `docker compose up -d` from the `protegrity-developer-edition` directory.
 
-### Setup Instructions
+### Running the Sample Applications
 
-Complete the steps provided here to clone, install, find, and test the Developer Edition.
+The quick runs for each sample is provided here. Open a command prompt and run the command from the repository root. Ensure the [Getting Started](#️-getting-started) steps are completed first.
 
-1.  Open a command prompt.
-2.  Clone the git repository.
-    ```
-    git clone https://github.com/Protegrity-Developer-Edition/protegrity-developer-edition.git
-    ```
-3.  Navigate to the `protegrity-developer-edition` directory in the cloned location.
-4.  Start the Data Discovery services in background. The dependent containers are large in size. Based on the network connection, the containers might take time to download and deploy.
-    ```
-    docker compose up -d
-    ```
-    Based on your configuration use the `docker-compose up -d` command.
-5. Install the `protegrity-developer-python` module. It is recommended to install and activate the Python virtual environment before installing the module.
-    ```bash
-    pip install protegrity-developer-python
-    ```
-    The installation completes and the success message is displayed.
+#### 1. Discover PII 
 
+List the PII entities.
+```
+python samples/sample-app-find.py
+```
+The logs list discovered entities as JSON. No modification of file contents is performed.
 
-### Run the Sample application
+#### 2. Find and Redact 
 
-Complete the steps provided here to run the sample application. The sample application reads the `sample-find-redact.txt` file, classifies and redacts the sensitive data, and the `output.txt` file is saved to the folder `samples/sample-data`.
+Find and redact or mask information using the default settings. Redaction and masking is controlled using the `method`, that is `redact` or `mask`, and `masking_char` in the `samples/config.json` file.
+```
+python samples/sample-app-find-and-redact.py
+```
+This produces the `samples/sample-data/output-redact.txt` file with entities redacted, that is removed, or masked.
 
-1.  Open a command prompt.
-2.  Navigate to the `protegrity-developer-edition` directory in the cloned location.
-3.  Run the sample application.
-    ```
-    python samples/sample-app-find-and-redact.py
-    ```
-> **💡Note:** By default, all sensitive data is redacted, even if the entities are not mapped in the `named_entity_map` configuration.
+#### 3. Semantic Guardrail using curl
+
+Run the sample using the `curl` command. 
+```
+bash semantic-guardrail/sample-guardrail-command.sh
+```
+This returns the HTTP status and the JSON with risk scores.
+>  **Note: This shell script has known issues on MacOS, will be fixed in next release.**
+
+#### 4. Semantic Guardrail using Python
+
+Run the sample using Python. 
+```
+python semantic-guardrail/sample-guardrail-python.py
+```
+This submits a multi-turn conversation with semantic and performs PII processing.
+
+#### 5. Find and Protect 
+
+> **Note**: Perform the steps from [Additional settings for using the Developer Edition API Service](#additional-settings-for-using-the-developer-edition-api-service) to obtain the API key, password, and to set the environment variables before running the sample code. If already complete, run the sample code. 
+
+Run the sample using Python.
+```
+python samples/sample-app-find-and-protect.py
+```
+This produces the `samples/sample-data/output-protect.txt` file with protected, this is tokenized-like, values.
+
+To get original data run:
+```
+python samples/sample-app-find-and-unprotect.py
+```
+This reads the `samples/sample-data/output-protect.txt` file and produces the `samples/sample-data/output-unprotect.txt` file with original values.
+
+#### 6. Direct Protect and Unprotect from the CLI
+
+> **Note**: Perform the steps from [Additional settings for using the Developer Edition API Service](#additional-settings-for-using-the-developer-edition-api-service) to obtain the API key, password, and to set the environment variables before running the sample file. If already complete, run the sample code.  
+
+Use the sample commands below to protect and unprotect data. 
+
+```
+# protect
+python samples/sample-app-protection.py --input_data "John Smith" --policy_user superuser --data_element name --protect
+```
+```
+# unprotect
+python samples/sample-app-protection.py --input_data "protected_data" --policy_user superuser --data_element name --unprotect
+```
+The `protected_data` value is obtained from the output of the protect command.
+
+Similarly, to encrypt and decrypt data, run the following commands:
+```
+# encrypt
+python samples/sample-app-protection.py --input_data "John Smith" --policy_user superuser --data_element text --enc
+```
+```
+# decrypt
+python samples/sample-app-protection.py --input_data "encrypted_data" --policy_user superuser --data_element text --dec
+```
+The `encrypted_data` value is obtained from the output of the encrypt command.
+
+For more information about the `sample-app-protection.py`, run the following command:
+```
+python samples/sample-app-protection.py --help
+```
+
+##### Additional settings for using the Developer Edition API Service
+  
+Prior registration is required to obtain credentials for accessing the Developer Edition API Service. The following samples demonstrate how to protect and unprotect data using the Protection APIs. The Protection APIs rely on authenticated access to the Developer Edition API Service.
+- `samples/sample-app-find-and-protect.py`
+- `samples/sample-app-protection.py`
+
+1.  Register for a free API key and password to access the Developer Edition API Service.
+    1.  Open a web browser.
+    2.  Navigate to [https://www.protegrity.com/developers/get-api-credentials ](https://protegritywpst.wpenginepowered.com/developers/get-api-credentials).
+    3.  Specify the following details:
+        -   First Name
+        -   Last Name
+        -   Work Email
+        -   Job Title
+        -   Company Name
+        -   Country
+    4.  Click the Terms & Conditions link and read the terms and conditions.
+    5.  Select the check box to accept the terms and conditions.
+        The request is analyzed. After the request is approved, a password and API key to access the Developer Edition API Service is sent to the Work Email specified.
+
+        > **Note**: After completing registration, allow 1-2 minutes for the confirmation email to arrive. If you do not see it in your inbox, check your spam or junk folder before retrying.  
+
+2.  Add the authentication information to the environment.
+    1.  Open a command prompt.
+    2.  Initialize a Python virtual environment.
+        
+    3.  Add the details to the environment using steps for your OS.
+        - For Linux and MacOS:
+            ```
+            export DEV_EDITION_EMAIL='<Email_used_for_registration>'
+            ```
+
+            ```
+            export DEV_EDITION_PASSWORD='<Password_provided_in_email>'
+            ```
+
+            ```
+            export DEV_EDITION_API_KEY='<API_key_provided_in_email>'
+            ```  
+
+            Verify that the variables are set.
+            ```
+            test -n "$DEV_EDITION_EMAIL" && echo "EMAIL $DEV_EDITION_EMAIL set" || echo "EMAIL missing"
+            test -n "$DEV_EDITION_PASSWORD" && echo "PASSWORD $DEV_EDITION_PASSWORD set" || echo "PASSWORD missing"
+            test -n "$DEV_EDITION_API_KEY" && echo "API KEY $DEV_EDITION_API_KEY set" || echo "API KEY missing"
+            ```
+    
+        - For Windows PowerShell:  
+            ```
+            $env:DEV_EDITION_EMAIL = '<Email_used_for_registration>' 
+            ```
+
+            ``` 
+            $env:DEV_EDITION_PASSWORD = '<Password_provided_in_email>' 
+            ```
+
+            ``` 
+            $env:DEV_EDITION_API_KEY = '<API_key_provided_in_email>'  
+            ```  
+
+            Verify that the variables are set
+            ```
+            if ($env:DEV_EDITION_EMAIL) { Write-Output "EMAIL $env:DEV_EDITION_EMAIL set"} else { Write-Output "EMAIL missing"} 
+            if ($env:DEV_EDITION_PASSWORD) { Write-Output "PASSWORD $env:DEV_EDITION_PASSWORD set" } else { Write-Output "PASSWORD missing" } 
+            if ($env:DEV_EDITION_API_KEY) { Write-Output "API KEY $env:DEV_EDITION_API_KEY set" } else { Write-Output "API KEY missing" } 
+            ```
 
 ## 📄 Configuration
 
-Edit `samples/config.json` to customize the Python module:
-- API endpoint (Default: `localhost`)
-- Named entity mappings
-- Redaction method (`redact` or `mask`, Default: `redact`)
-- Masking Character (Default: `#`)
-- Classification score threshold (Default: `0.6`)
-- Enable logging (Default: `true`)
+Edit `samples/config.json` to customize SDK behavior. 
+Keys:
+- `named_entity_map`: Optional mappings (friendly labels) used during redact/mask.
+- `method`: `redact` (remove) or `mask` (replace with masking char).
+- `masking_char`: Character for masking (when `method` = mask).
+- `classification_score_threshold`: Minimum confidence (default 0.6 if omitted).
+- `endpoint_url`: Override classification endpoint (defaults internally to docker compose service `http://localhost:8580/...`).
+- `enable_logging`, `log_level`.
+
+Current example:
 ```json
 {
-  "api_endpoint": "http://localhost:8580/pty/data-discovery/v1.0/classify",
-  "named_entity_map": {
-        "CREDIT_CARD": "CCN",
-        "DATE_TIME": "DATE"
-   },
-  "redaction_method": "redact",
-  "masking_character": "#",
-  "classification_threshold": 0.6,
-  "enable_logging": true
+    "masking_char": "#",
+    "named_entity_map": {
+        "USERNAME": "USERNAME",
+        "STATE": "STATE",
+        "PHONE_NUMBER": "PHONE",
+        "SOCIAL_SECURITY_NUMBER": "SSN",
+        "AGE": "AGE",
+        "CITY": "CITY",
+        "PERSON": "PERSON"
+    },
+    "method": "redact"
 }
 ```
 
+### Service Endpoints (default using docker compose)
+- Classification API: `http://localhost:${CLASSIFICATION_PORT:-8580}/pty/data-discovery/v1.0/classify`
+- Semantic Guardrail API: `http://localhost:${SGR_PORT:-8581}/pty/semantic-guardrail/v1.0/conversations/messages/scan`
+
+If you change published ports in `docker-compose.yml`, update `endpoint_url`. Also, if required, update the semantic guardrail URL in the scripts.
+
+### Docker Compose Services
+`docker-compose.yml` provisions:
+- `presidio-provider-service` and `roberta-provider-service`: ML provider backends.
+- `classification-service`: Exposes Data Discovery REST API. Uses port 8580 by default.
+- `semantic-guardrail-service`: Conversation risk and PII scanning depends on classification. Uses port 8581 by default.
+
+Restart stack after changes to `docker-compose.yml` file from `protegrity-developer-edition` directory:
+```
+docker compose down && docker compose up -d
+```
+
+Check service logs for any errors from `protegrity-developer-edition` directory:
+```
+docker compose logs
+```
 ## 📚 Documentation
 
-- The Protegrity Developer Edition documentation is available at [http://developer.docs.protegrity.com/](http://developer.docs.protegrity.com/).
+- The Protegrity Developer Edition documentation is available at [https://developer.docs.protegrity.com/](https://developer.docs.protegrity.com/).
 - For API reference and tutorials, visit the Developer Portal at [https://www.protegrity.com/developers](https://www.protegrity.com/developers).
 
 ## 📢 Community & Support
 
 - Join the discussion on https://github.com/orgs/Protegrity-Developer-Edition/discussions.
 - Anonymous downloads supported; registration required for participation.
+- Issues / feature requests: please include sample script name & log snippet.
 
 ## 📜 License
 

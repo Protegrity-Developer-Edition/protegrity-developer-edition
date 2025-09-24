@@ -6,7 +6,7 @@ import protegrity_developer_python as protegrity  # Ensure this module is instal
 
 def configure_logger() -> logging.Logger:
     """Configure and return a logger instance."""
-    logger = logging.getLogger("sample_app_find_and_redact")
+    logger = logging.getLogger("sample_app_find_and_unprotect")
     handler = logging.StreamHandler()
     formatter = logging.Formatter(
         "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -30,18 +30,16 @@ def configure_protegrity(config: dict) -> None:
     protegrity.configure(
         endpoint_url=config.get("endpoint_url"),
         named_entity_map=config.get("named_entity_map"),
-        masking_char=config.get("masking_char", "#"),
         classification_score_threshold=config.get(
             "classification_score_threshold", 0.6
         ),
-        method=config.get("method", "redact"),
         enable_logging=config.get("enable_logging", True),
         log_level=config.get("log_level", "info"),
     )
 
 
-def redact_file(input_path: Path, output_path: Path, logger: logging.Logger) -> None:
-    """Read input file, redact sensitive data, and write to output file."""
+def unprotect_file(input_path: Path, output_path: Path, logger: logging.Logger) -> None:
+    """Read input file, unprotect sensitive data, and write to output file."""
     try:
         output_path.parent.mkdir(parents=True, exist_ok=True)
         logger.info("Reading from file %s...", input_path)
@@ -52,8 +50,8 @@ def redact_file(input_path: Path, output_path: Path, logger: logging.Logger) -> 
             for line in infile:
                 stripped_line = line.rstrip()
                 if stripped_line:  # Only process non-empty lines
-                    redacted_line = protegrity.find_and_redact(stripped_line) + "\n"
-                    outfile.write(redacted_line)
+                    unprotected_line = protegrity.find_and_unprotect(stripped_line) + "\n"
+                    outfile.write(unprotected_line)
                 else:
                     outfile.write(line)
         logger.info("Processed text written to: %s", output_path)
@@ -61,14 +59,14 @@ def redact_file(input_path: Path, output_path: Path, logger: logging.Logger) -> 
         logger.error("File not found: %s", error)
         raise RuntimeError(f"File not found: {error}") from error
     except Exception as error:
-        logger.error("Redaction failed: %s", error)
-        raise RuntimeError(f"Redaction failed: {error}") from error
+        logger.error("Unprotection failed: %s", error)
+        raise RuntimeError(f"Unprotection failed: {error}") from error
 
 
 def log_output_snippet(
     output_path: Path, logger: logging.Logger, snippet_length: int = 250
 ) -> None:
-    """Log a snippet of the redacted output file."""
+    """Log a snippet of the unprotected output file."""
     try:
         with output_path.open("r", encoding="utf-8") as file:
             text = file.read()
@@ -84,19 +82,19 @@ def log_output_snippet(
 
 
 def main() -> None:
-    """Main function to execute the redaction process."""
+    """Main function to execute the protection process."""
     logger = configure_logger()
 
     base_dir = Path(__file__).resolve().parent
-    input_file = base_dir / "sample-data" / "input.txt"
-    output_file = base_dir / "sample-data" / "output-redact.txt"
+    input_file = base_dir / "sample-data" / "output-protect.txt"
+    output_file = base_dir / "sample-data" / "output-unprotect.txt"
     config_file = base_dir / "config.json"
 
     config = load_config(config_file)
     if config:
         configure_protegrity(config)
 
-    redact_file(input_file, output_file, logger)
+    unprotect_file(input_file, output_file, logger)
     log_output_snippet(output_file, logger)
 
 

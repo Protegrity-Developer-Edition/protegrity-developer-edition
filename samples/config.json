@@ -1,8 +1,13 @@
 {
     "masking_char": "#",
     "named_entity_map": {
-        "CREDIT_CARD": "CCN",
-        "DATE_TIME": "DATE"
+        "USERNAME": "USERNAME",
+        "STATE": "STATE",
+        "PHONE_NUMBER": "PHONE",
+        "SOCIAL_SECURITY_NUMBER": "SSN",
+        "AGE": "AGE",
+        "CITY": "CITY",
+        "PERSON": "PERSON"
     },
     "method": "redact"
 }

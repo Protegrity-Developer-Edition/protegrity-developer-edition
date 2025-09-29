@@ -87,7 +87,7 @@ MacOS requires additional steps for Docker and for systems with Apple Silicon ch
         1. Open a command prompt.
         2. Run the following command.
             ```
-            colima start --vm-type vz --vz-rosetta --memory 16
+            colima start --vm-type vz --vz-rosetta --memory 4
             ```
     - For Docker Desktop: 
         1.  Open Docker Desktop.
@@ -126,7 +126,7 @@ MacOS requires additional steps for Docker and for systems with Apple Silicon ch
         6. Close and start the command prompt.
         7. Start colima.
             ```
-            colima start --vm-type vz --vz-rosetta --memory 16
+            colima start --vm-type vz --vz-rosetta --memory 4
             ```
     - For Docker Desktop: 
         1.  Open Docker Desktop.

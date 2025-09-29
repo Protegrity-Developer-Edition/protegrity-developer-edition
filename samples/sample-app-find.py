@@ -60,7 +60,7 @@ def main() -> None:
     logger = configure_logger()
 
     base_dir = Path(__file__).resolve().parent
-    input_file = base_dir / "sample-data" / "sample-find-redact.txt"
+    input_file = base_dir / "sample-data" / "input.txt"
     config_file = base_dir / "config.json"
 
     config = load_config(config_file)
@@ -70,7 +70,7 @@ def main() -> None:
     input_text = read_input_file(input_file, logger)
     pii_output = discover_pii(input_text)
 
-    logger.info("Found the below PII data...\n%s", pii_output)
+    logger.info("Found the below data...\n%s", pii_output)
 
 
 if __name__ == "__main__":

@@ -2,10 +2,10 @@ networks:
   protegrity-network:
     name: ${DOCKER_NETWORK_NAME:-protegrity-network}
     external: false
-    
+
 services:
-  
-  presidio_provider_service:
+
+  presidio-provider-service:
     image: ${DOCKER_PRESIDIO_IMAGE:-ghcr.io/protegrity-developer-edition/presidio-classification-provider:1.0.0-111-98844c64}
     container_name: presidio_provider
     networks:
@@ -13,7 +13,7 @@ services:
     environment:
       - logging_config=${PRESIDIO_LOGGING_CONFIG:-}
 
-  roberta_provider_service:
+  roberta-provider-service:
     image: ${DOCKER_ROBERTA_IMAGE:-ghcr.io/protegrity-developer-edition/roberta-classification-provider:1.0.0-74-fe1d94de}
     container_name: roberta_provider
     networks:
@@ -21,17 +21,28 @@ services:
     environment:
       - logging_config=${ROBERTA_LOGGING_CONFIG:-}
 
-  classification_service:
+  classification-service:
     image: ${DOCKER_CLASSIFICATION_IMAGE:-ghcr.io/protegrity-developer-edition/classification-service:1.0.0-175-073facba}
     container_name: classification_service
     ports:
       - "${CLASSIFICATION_PORT:-8580}:80"
     depends_on:
-      - presidio_provider_service
-      - roberta_provider_service
+      - presidio-provider-service
+      - roberta-provider-service
     networks:
       - protegrity-network
     environment:
-      - PROVIDERS=[{"name":"Presidio", "address":"http://presidio_provider_service"}, {"name":"Roberta", "address":"http://roberta_provider_service"}]
+      - PROVIDERS=[{"name":"Presidio", "address":"http://presidio-provider-service"}, {"name":"Roberta", "address":"http://roberta-provider-service"}]
       - logging_config=${CLASSIFICATION_LOGGING_CONFIG:-}
-      
+
+  semantic-guardrail-service:
+    image: ${DOCKER_SEMANTIC_GUARDRAIL_IMAGE:-ghcr.io/protegrity-developer-edition/support-chatbot:1.0.0.8}
+    container_name: semantic_guardrail
+    ports:
+      - "${SGR_PORT:-8581}:8001"
+    depends_on:
+      - classification-service
+    networks:
+      - protegrity-network
+    environment:
+      - LOG_LEVEL=${SEMANTIC_GUARDRAIL_LOG_LEVEL:-WARNING}

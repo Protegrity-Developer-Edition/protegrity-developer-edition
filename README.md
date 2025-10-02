@@ -1,4 +1,13 @@
+<div align="center">
+
 # Protegrity Developer Edition
+[![Version](https://img.shields.io/badge/version-1.0.0-green.svg?style=flat)](https://github.com/Protegrity-Developer-Edition/protegrity-developer-edition/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](https://github.com/Protegrity-Developer-Edition/protegrity-developer-edition/blob/main/LICENSE)
+[![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat&logo=linux&logoColor=black)](https://www.linux.org/)
+[![Windows](https://img.shields.io/badge/Windows-0078D6?style=flat&logo=windows&logoColor=white)](https://www.microsoft.com/windows/)
+[![macOS](https://img.shields.io/badge/mac%20os-000000?style=flat&logo=macos&logoColor=F0F0F0)](https://www.apple.com/macos/)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Protegrity-Developer-Edition/protegrity-developer-edition)
+</div>
 
 Welcome to the `protegrity-developer-edition` repository, part of the Protegrity Developer Edition suite. This repository provides a self-contained experimentation platform for discovering and protecting sensitive data using Protegrity’s Data Discovery, Semantic Guardrail, and Protection APIs.
 
@@ -10,6 +19,22 @@ This repository enables developers to:
 - Experiment with semantic guardrails to secure GenAI applications using messaging risk scoring, conversation risk scoring, and PII scanning.
 - Integrate Protegrity APIs into GenAI and traditional applications.
 - Use sample applications and data to understand integration workflows.
+
+**Why This Matters**
+
+AI is transforming every industry, but privacy can’t be an afterthought. Protegrity Developer Edition 1.0 makes enterprise-grade data discovery and data protection developer-friendly, so you can build secure, privacy-first solutions for both AI pipelines and traditional data workflows. Whether you’re protecting sensitive information in analytics pipelines, business applications, or next-generation AI, Developer Edition empowers you to innovate confidently while keeping data safe. 
+
+Protegrity Developer Edition enables secure data and AI pipelines,including:
+
+- **Privacy in conversational AI:** Sensitive chatbot inputs are protected before they reach generative AI models.
+
+- **Prompt sanitization for LLMs:** Automated PII masking reduces risk during large language model prompt engineering and inference.
+
+- **Experimentation with Jupyter notebooks:** Data scientists can prototype directly in Jupyter notebooks for agile experimentation.
+
+- **Output redaction and leakage prevention:** Detect and protect sensitive data in model outputs before returning them to end users.
+
+- **Privacy-enhanced AI training:** Sensitive fields in training datasets are de-identified to support compliant and secure AI development.
 
 ### Quick Links
 

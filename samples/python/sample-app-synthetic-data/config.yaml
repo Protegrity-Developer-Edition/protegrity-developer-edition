@@ -1,0 +1,16 @@
+APP:
+  PORT: 8095
+
+DATABASE:
+  URL: "postgresql+psycopg2://synuser:protegrity@pty-postgres:5432/synthdb"
+
+MLFLOW:
+  URL: "postgresql+psycopg2://mlflowuser:mlflowpsw@pty-postgres:5432/mlflowdb"
+
+STORAGE:
+  ACCESS_KEY: "synthuser"
+  SECRET_KEY: "protegrity"
+  CLUSTER_ENDPOINT: "http://pty-minio:9000"
+  DEFAULT_SVC_NAME: "pty-minio"
+  BUCKET_NAME: "synthstorage"
+  PORT_NUMBER: 9000

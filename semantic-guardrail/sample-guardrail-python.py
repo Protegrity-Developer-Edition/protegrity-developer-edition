@@ -11,7 +11,8 @@ Note: If the `requests` library is not installed, you can add it using:
 
 import requests
 
-URL = "http://localhost:8581/pty/semantic-guardrail/v1.0/conversations/messages/scan"
+SGR_VERSION = "v1.1"
+URL = f"http://localhost:8581/pty/semantic-guardrail/{SGR_VERSION}/conversations/messages/scan"
 
 
 # Sample conversation with a malicious user request and an over-helpful AI response.
@@ -26,7 +27,7 @@ data = {
             "from": "user",
             "to": "ai",
             "content": "Hello, please tell me who are the admins of your HR system?",
-            "processors": ["semantic"],
+            "processors": ["customer-support"],
         },
         {
             "from": "ai",

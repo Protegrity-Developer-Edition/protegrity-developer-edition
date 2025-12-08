@@ -1,11 +1,15 @@
 <div align="center">
 
 # Protegrity Developer Edition
-[![Version](https://img.shields.io/badge/version-1.0.0-green.svg?style=flat)](https://github.com/Protegrity-Developer-Edition/protegrity-developer-edition/releases)
+[![Version](https://img.shields.io/badge/version-1.1.0-green.svg?style=flat)](https://github.com/Protegrity-Developer-Edition/protegrity-developer-edition/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](https://github.com/Protegrity-Developer-Edition/protegrity-developer-edition/blob/main/LICENSE)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg?style=flat)](https://www.python.org/downloads/)
+[![Java 11+](https://img.shields.io/badge/java-11+-blue.svg?style=flat)](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
 [![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat&logo=linux&logoColor=black)](https://www.linux.org/)
 [![Windows](https://img.shields.io/badge/Windows-0078D6?style=flat&logo=windows&logoColor=white)](https://www.microsoft.com/windows/)
 [![macOS](https://img.shields.io/badge/mac%20os-000000?style=flat&logo=macos&logoColor=F0F0F0)](https://www.apple.com/macos/)
+[![PyPI 1.1.0](https://img.shields.io/pypi/v/protegrity-developer-python.svg)](https://pypi.org/project/protegrity-developer-python/)
+[![Anaconda 1.1.0](https://anaconda.org/protegrity/protegrity-developer-python/badges/version.svg?style=flat)](https://anaconda.org/protegrity/protegrity-developer-python)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Protegrity-Developer-Edition/protegrity-developer-edition)
 </div>
 
@@ -22,9 +26,9 @@ This repository enables developers to:
 
 **Why This Matters**
 
-AI is transforming every industry, but privacy can’t be an afterthought. Protegrity Developer Edition 1.0 makes enterprise-grade data discovery and data protection developer-friendly, so you can build secure, privacy-first solutions for both AI pipelines and traditional data workflows. Whether you’re protecting sensitive information in analytics pipelines, business applications, or next-generation AI, Developer Edition empowers you to innovate confidently while keeping data safe. 
+AI is transforming every industry, but privacy can’t be an afterthought. Protegrity Developer Edition 1.1.0 makes enterprise-grade data discovery and data protection developer-friendly, so you can build secure, privacy-first solutions for both AI pipelines and traditional data workflows. Whether you’re protecting sensitive information in analytics pipelines, business applications, or next-generation AI, Developer Edition empowers you to innovate confidently while keeping data safe. 
 
-Protegrity Developer Edition enables secure data and AI pipelines,including:
+Protegrity Developer Edition enables secure data and AI pipelines, including:
 
 - **Privacy in conversational AI:** Sensitive chatbot inputs are protected before they reach generative AI models.
 
@@ -43,7 +47,7 @@ Protegrity Developer Edition enables secure data and AI pipelines,including:
 - [Preparing the system](#preparing-the-system)
 - If your setup is ready, [run the samples](#running-the-sample-applications)
 
-## 📦 Repository Structure
+## 📦 Repository Structure 
 
 ```text
 .
@@ -53,18 +57,30 @@ Protegrity Developer Edition enables secure data and AI pipelines,including:
 ├── README.md
 ├── docker-compose.yml                   # Orchestrates data discovery + semantic guardrail services
 ├── data-discovery/                      # Low-level classification examples
-│   ├── sample-classification-commands.sh
-│   └── sample-classification-python.py
+│   ├── sample-classification-bash-text.sh
+│   ├── sample-classification-bash-tabular.sh
+│   ├── sample-classification-python-text.py
+│   └── sample-classification-python-tabular.py
 ├── semantic-guardrail/                  # GenAI security risk & PII multi-turn scanning examples
 │   └── sample-guardrail-python.py
-└── samples/                             # High-level Python SDK samples
+└── samples/                             # High-level SDK samples (Python & Java)
+    ├── python/
+    │   ├── sample-app-semantic-guardrails/  # Semantic Guardrail Jupyter Notebook samples
+    │   │   ├── Sample Application.ipynb
+    │   ├── sample-app-synthetic-data/       # Synthetic Data Jupyter Notebook samples
+    │   │   ├── synthetic_data.ipynb
+    │   ├── sample-app-find.py               # Discover and list PII entities
+    │   ├── sample-app-find-and-redact.py    # Discover + redact or mask entities
+    │   ├── sample-app-find-and-protect.py   # Discover + protect entities (tokenize style)
+    │   ├── sample-app-find-and-unprotect.py # Unprotect protected entities
+    │   └── sample-app-protection.py         # Direct protect / unprotect (CLI style)
+    ├── java/                            # Java SDK samples
+    │   ├── sample-app-find.sh               # Discover and list PII entities
+    │   ├── sample-app-protection.sh         # Direct protect / unprotect (CLI style)
+    │   ├── sample-app-find-and-protect.sh   # Discover + protect entities
+    │   ├── sample-app-find-and-unprotect.sh # Unprotect protected entities
+    │   └── sample-app-find-and-redact.sh    # Discover + redact entities
     ├── config.json
-    ├── requirements.txt
-    ├── sample-app-find.py               # Discover and list PII entities
-    ├── sample-app-find-and-redact.py    # Discover + redact or mask entities
-    ├── sample-app-find-and-protect.py   # Discover + protect entities (tokenize style)
-    ├── sample-app-find-and-unprotect.py # Unprotect protected entities
-    ├── sample-app-protection.py         # Direct protect / unprotect (CLI style)
     └── sample-data/
         ├── input.txt
         ├── output-redact.txt            # Produced by redact workflow
@@ -79,6 +95,7 @@ Protegrity Developer Edition enables secure data and AI pipelines,including:
 - **Redaction / Masking**: Replace detected entities (configurable masking char, mapping).
 - **Protection (Tokenization-like)**: Protect and unprotect specific data elements using `sample-app-protection.py` and combined find + protect sample.
 - **Semantic Guardrail**: Message and conversation level risk scoring + PII scanning for GenAI flows.
+- **Synthetic Data**: Synthetic Data is a privacy-enhancing technology that generates artificial data from real datasets while preserving statistical properties and relationships without exposing actual personal information.
 - **Multi-turn Examples**: Use the curl and Python samples from the semantic guardrail directory.
 - **Configurable Samples**: Adjust behavior through `samples/config.json`.
 - **Cross-platform**: Works on Linux, MacOS, and Windows.
@@ -86,10 +103,12 @@ Protegrity Developer Edition enables secure data and AI pipelines,including:
 ## 🛠️ Getting Started
 
 ### Prerequisites
-- [Python >= 3.12.11](https://www.python.org/downloads/)  
+- [Python >= 3.12.11](https://www.python.org/downloads/) (for Python samples)  
   > **Note**: Ensure that the python command on your system points to a supported python3 version, for example, Python 3.12.11. You can verify this by running `python --version`. 
-- [pip](https://pip.pypa.io/en/stable/installation/)
-- [Python Virtual Environment](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/) 
+- [pip](https://pip.pypa.io/en/stable/installation/) (for Python samples)
+- [Python Virtual Environment](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/) (for Python samples)
+- [Java 11 or later](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) (for Java samples)
+- [Maven 3.6+](https://maven.apache.org/download.cgi) or use the included Maven wrapper (for Java samples) 
 - Container management software:
     - For Linux/Windows: [Docker](https://docs.docker.com/reference/cli/docker/)
     - For MacOS: [Docker Desktop](https://docs.docker.com/reference/cli/docker/) or Colima
@@ -98,7 +117,7 @@ Protegrity Developer Edition enables secure data and AI pipelines,including:
 - For more information about the minimum requirements, refer to [Prerequisites](https://developer.docs.protegrity.com/docs/install/deved_prereq/).
 - Optional: If the Developer Edition is already installed, then complete the following tasks:
     - Back up any customized files.
-    - Stop any Developer Edition containers that are running using the `docker compose` command.
+    - Stop any Developer Edition containers that are running using the `docker compose down --remove-orphans` command.
     - Remove the `protegrity-developer-python` module using the `pip uninstall protegrity-developer-python` command.
 
 Linux and Windows users can proceed to [Preparing the system](#preparing-the-system).
@@ -112,7 +131,7 @@ MacOS requires additional steps for Docker and for systems with Apple Silicon ch
         1. Open a command prompt.
         2. Run the following command.
             ```
-            colima start --vm-type vz --vz-rosetta --memory 4
+            colima start --vm-type vz --vz-rosetta --memory 8
             ```
     - For Docker Desktop: 
         1.  Open Docker Desktop.
@@ -151,7 +170,7 @@ MacOS requires additional steps for Docker and for systems with Apple Silicon ch
         6. Close and start the command prompt.
         7. Start colima.
             ```
-            colima start --vm-type vz --vz-rosetta --memory 4
+            colima start --vm-type vz --vz-rosetta --memory 8
             ```
     - For Docker Desktop: 
         1.  Open Docker Desktop.
@@ -188,7 +207,9 @@ MacOS requires additional steps for Docker and for systems with Apple Silicon ch
         "default-platform": "linux/amd64"
         ```
     4. Save and close the file.
-    5. Run the `docker compose up -d` from the `protegrity-developer-edition` directory.
+    5. Some services are profile enabled, ensure to use the `--profile` flag while starting the services.
+       - Run the `docker compose up -d` from the `protegrity-developer-edition` directory to start the default services.
+       - Run the `docker compose --profile synthetic up -d` from the `protegrity-developer-edition` directory to start the `synthetic` profiled services.
 
 ### Preparing the system
 
@@ -201,38 +222,68 @@ Complete the steps provided here to use the samples provided with  Developer Edi
     ```
     git clone https://github.com/Protegrity-Developer-Edition/protegrity-developer-edition.git
     ```
+    > **Note**: For UAT, please switch to branch `pre-release-1.1.0` after cloning the repository.
 3.  Navigate to the `protegrity-developer-edition` directory in the cloned location.
    
-4.  Start the services (classification + semantic guardrail) in background. The dependent containers are large; downloads may take time.
+4.  Start the services (classification + semantic guardrail + Synthetic Data [with profile]) in background. The dependent containers are large; downloads may take time.
+    - To start the Data Discovery and Semantic Guardrail services, run: 
     ```
     docker compose up -d
     ```
-    Based on your configuration use the `docker-compose up -d` command.
-5. Install the `protegrity-developer-python` module. It is recommended to install and activate the Python virtual environment before installing the module.
+    - To start the Data Discovery, Semantic Guardrail, and Synthetic Data services, run: 
     ```
-    pip install protegrity-developer-python
+    docker compose --profile synthetic up -d
+    ```
+    Based on your configuration use the `docker-compose up -d` command.
+5. Install the `protegrity-developer-python` module.
+    > **Note**: It is recommended to install and activate the Python virtual environment before installing the module.
+    ```
+    pip install --no-cache-dir --force-reinstall --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple protegrity-developer-python==1.1.0
     ```
     The installation completes and the success message is displayed.
-   
+6. For Java samples, the `protegrity-developer-java` module is automatically downloaded from Maven Central when you run a sample for the first time.
+7. Install Jupyter Lab to run the notebook samples provided for Semantic Guardrail and Synthetic Data.
+    > **Note**: It is recommended to install and activate the Python virtual environment. 
+    ```
+    pip install -r samples/python/requirements.txt
+    ```  
 
 ### Running the Sample Applications
 
 The quick runs for each sample is provided here. Open a command prompt and run the command from the repository root. Ensure the [Getting Started](#%EF%B8%8F-getting-started) steps are completed first. For more information about running the application, refer to the [Running the sample application section](https://developer.docs.protegrity.com/docs/running/#running-the-script-for-protecting-data).
 
+> **Note**: Both Python and Java samples are available. Python samples are located in `samples/python/` and Java samples in `samples/java/`. Choose the language that best fits your project needs.
+
 #### 1. Discover PII 
 
 List the PII entities.
+
+**Python:**
 ```
-python samples/sample-app-find.py
+python samples/python/sample-app-find.py
 ```
+
+**Java:**
+```
+bash samples/java/sample-app-find.sh
+```
+
 The logs list discovered entities as JSON. No modification of file contents is performed.
 
 #### 2. Find and Redact 
 
 Find and redact or mask information using the default settings. Redaction and masking is controlled using the `method`, that is `redact` or `mask`, and `masking_char` in the `samples/config.json` file.
+
+**Python:**
 ```
-python samples/sample-app-find-and-redact.py
+python samples/python/sample-app-find-and-redact.py
 ```
+
+**Java:**
+```
+bash samples/java/sample-app-find-and-redact.sh
+```
+
 This produces the `samples/sample-data/output-redact.txt` file with entities redacted, that is removed, or masked.
 
 #### 3. Semantic Guardrail using Python
@@ -243,11 +294,41 @@ python semantic-guardrail/sample-guardrail-python.py
 ```
 This submits a multi-turn conversation with semantic and performs PII processing.
 
-#### 4. Setting the environment variables
+#### 4. Semantic Guardrail using Jupyter Notebook
+> **Note**: It is recommended to install and activate the Python virtual environment. 
+1.	Run the following command to start Jupyter Lab for running Semantic Guardrail.
+    ```
+    jupyter lab
+    ```
+2.	Copy the URL displayed and navigate to the site from a web browser. Ensure that localhost is replaced with the IP address of the system where the AI Developer Edition is set up.
+3.	In the left pane of the notebook, navigate to `samples/python/sample-app-semantic-guardrails`.
+4.	Open the `Sample Application.ipynb` file.
+5.	Click the Play icon and follow the prompts in the notebook.
+
+#### 5. Synthetic Data using Jupyter Notebook
+A Jupyter Notebook is provided for using Protegrity Synthetic Data. 
+
+> **Note**: It is recommended to install and activate the Python virtual environment. 
+1. Start Jupyter Lab using the following command.
+   ```
+   jupyter lab
+   ```
+The Jupyter lab starts and a URL with a token is displayed. 
+2. Copy the URL displayed and navigate to the site from a web browser. Ensure that localhost is replaced with the IP address of the system where the AI Developer Edition is set up.
+1.	In the left pane of the notebook, navigate to `samples/python/sample-app-synthetic-data`.
+2.	Open the `synthetic_data.ipynb` file.
+	Click the Play icon and follow the steps in the notebook to explore the synthetic data capabilities.
+
+
+#### 6. Setting the environment variables
 
 The next steps has samples that demonstrate how to protect and unprotect data using the Protection APIs. The Protection APIs rely on authenticated access to the Developer Edition API Service.
-- `samples/sample-app-find-and-protect.py`
-- `samples/sample-app-protection.py`
+- `samples/python/sample-app-find-and-protect.py`
+- `samples/python/sample-app-protection.py`
+- `samples/python/sample-app-find-and-unprotect.py`
+- `samples/java/sample-app-find-and-protect.sh`
+- `samples/java/sample-app-protection.sh`
+- `samples/java/sample-app-find-and-unprotect.sh`
 
 Perform the steps from [Additional settings for using the Developer Edition API Service](#additional-settings-for-using-the-developer-edition-api-service) to obtain the API key and password for setting the environment variables. If you already have the API key and password, then proceed to export the environment variables.   
 
@@ -291,58 +372,109 @@ Perform the steps from [Additional settings for using the Developer Edition API 
     if ($env:DEV_EDITION_API_KEY) { Write-Output "API KEY $env:DEV_EDITION_API_KEY set" } else { Write-Output "API KEY missing" } 
     ```
 
-#### 5. Find and Protect 
+#### 7. Find and Protect 
 
 Ensure that the [environment variables are exported](#4-setting-the-environment-variables) and then run the sample code. 
 
+**Python:**
 ```
-python samples/sample-app-find-and-protect.py
+python samples/python/sample-app-find-and-protect.py
 ```
+
+**Java:**
+```
+bash samples/java/sample-app-find-and-protect.sh
+```
+
 This produces the `samples/sample-data/output-protect.txt` file with protected, this is tokenized-like, values.
 
 To get original data run:
+
+**Python:**
 ```
-python samples/sample-app-find-and-unprotect.py
+python samples/python/sample-app-find-and-unprotect.py
 ```
+
+**Java:**
+```
+bash samples/java/sample-app-find-and-unprotect.sh
+```
+
 This reads the `samples/sample-data/output-protect.txt` file and produces the `samples/sample-data/output-unprotect.txt` file with original values.
 
-#### 6. Direct Protect and Unprotect from the CLI
+#### 8. Direct Protect and Unprotect from the CLI
 
 Use the sample commands below to protect and unprotect data. Ensure that the [environment variables are exported](#4-setting-the-environment-variables) and then run the sample code.
 
 For information about the users, roles, and data elements, refer to [*Understanding Users and Roles* and *Understanding the Data Elements*](https://developer.docs.protegrity.com/docs/running/#running-the-script-for-protecting-data)
 
+**Python:**
 ```
 # protect
-python samples/sample-app-protection.py --input_data "John Smith" --policy_user superuser --data_element name --protect
+python samples/python/sample-app-protection.py --input_data "John Smith" --policy_user superuser --data_element name --protect
 ```
 ```
 # unprotect
-python samples/sample-app-protection.py --input_data "protected_data" --policy_user superuser --data_element name --unprotect
+python samples/python/sample-app-protection.py --input_data "<protected_data>" --policy_user superuser --data_element name --unprotect
 ```
-The `protected_data` value is obtained from the output of the protect command.
+
+**Java:**
+```
+# protect
+bash samples/java/sample-app-protection.sh --input_data "John Smith" --policy_user superuser --data_element name --protect
+```
+```
+# unprotect
+bash samples/java/sample-app-protection.sh --input_data "<protected_data>" --policy_user superuser --data_element name --unprotect
+```
+
+The `<protected_data>` value is obtained from the output of the protect command.
 
 Similarly, to encrypt and decrypt data, run the following commands:
+
+**Python:**
 ```
 # encrypt
-python samples/sample-app-protection.py --input_data "John Smith" --policy_user superuser --data_element text --enc
+python samples/python/sample-app-protection.py --input_data "John Smith" --policy_user superuser --data_element text --enc
 ```
 ```
 # decrypt
-python samples/sample-app-protection.py --input_data "encrypted_data" --policy_user superuser --data_element text --dec
+python samples/python/sample-app-protection.py --input_data "<encrypted_data>" --policy_user superuser --data_element text --dec
 ```
-The `encrypted_data` value is obtained from the output of the encrypt command.
 
-For more information about the `sample-app-protection.py`, run the following command:
+**Java:**
 ```
-python samples/sample-app-protection.py --help
+# encrypt
+bash samples/java/sample-app-protection.sh --input_data "John Smith" --policy_user superuser --data_element text --enc
+```
+```
+# decrypt
+bash samples/java/sample-app-protection.sh --input_data "<encrypted_data>" --policy_user superuser --data_element text --dec
+```
+
+The `<encrypted_data>` value is obtained from the output of the encrypt command.
+
+For more information, run the help command:
+
+**Python:**
+```
+python samples/python/sample-app-protection.py --help
+```
+
+**Java:**
+```
+bash samples/java/sample-app-protection.sh --help
 ```
 
 ##### Additional settings for using the Developer Edition API Service
   
 Prior registration is required to obtain credentials for accessing the Developer Edition API Service. The following samples demonstrate how to protect and unprotect data using the Protection APIs. The Protection APIs rely on authenticated access to the Developer Edition API Service.
-- `samples/sample-app-find-and-protect.py`
-- `samples/sample-app-protection.py`
+- `samples/python/sample-app-find-and-protect.py`
+- `samples/python/sample-app-protection.py`
+- `samples/python/sample-app-find-and-unprotect.py`
+- `samples/java/sample-app-find-and-protect.sh`
+- `samples/java/sample-app-protection.sh`
+- `samples/java/sample-app-find-and-unprotect.sh`
 
 1.  Open a web browser.
 2.  Navigate to [https://www.protegrity.com/developers/get-api-credentials ](https://www.protegrity.com/developers/get-api-credentials).
@@ -363,7 +495,7 @@ Prior registration is required to obtain credentials for accessing the Developer
 
 Edit `samples/config.json` to customize SDK behavior. 
 Keys:
-- `named_entity_map`: Optional mappings (friendly labels) used during redact/mask.
+- `named_entity_map`: Optional mappings (friendly labels) used during redact/mask. [Supported Classification Entities](http://10.39.2.239:7575/docs/appendix/supported_entities/)
 - `method`: `redact` (remove) or `mask` (replace with masking char).
 - `masking_char`: Character for masking (when `method` = mask).
 - `classification_score_threshold`: Minimum confidence (default 0.6 if omitted).
@@ -375,29 +507,30 @@ Current example:
 {
     "masking_char": "#",
     "named_entity_map": {
-        "USERNAME": "USERNAME",
-        "STATE": "STATE",
+        "PERSON": "PERSON",
+        "LOCATION": "LOCATION",
+        "SOCIAL_SECURITY_ID": "SSN",
         "PHONE_NUMBER": "PHONE",
-        "SOCIAL_SECURITY_NUMBER": "SSN",
         "AGE": "AGE",
-        "CITY": "CITY",
-        "PERSON": "PERSON"
+        "USERNAME": "USERNAME"
     },
     "method": "redact"
 }
 ```
 
 ### Service Endpoints (default using docker compose)
-- Classification API: `http://localhost:${CLASSIFICATION_PORT:-8580}/pty/data-discovery/v1.0/classify`
-- Semantic Guardrail API: `http://localhost:${SGR_PORT:-8581}/pty/semantic-guardrail/v1.0/conversations/messages/scan`
+- Classification API: `http://localhost:${CLASSIFICATION_PORT:-8580}/pty/data-discovery/v1.1/classify`
+- Semantic Guardrail API: `http://localhost:${SGR_PORT:-8581}/pty/semantic-guardrail/v1.1/conversations/messages/scan`
+- Synthetic Data API: `http://localhost:${SYNTHETIC_DATA_PORT:-8095}/pty/synthetic-data/v1`
 
 If you change published ports in `docker-compose.yml`, update `endpoint_url`. Also, if required, update the semantic guardrail URL in the scripts.
 
 ### Docker Compose Services
 `docker-compose.yml` provisions:
-- `presidio-provider-service` and `roberta-provider-service`: ML provider backends.
+- `pattern-provider-service` and `context-provider-service`: ML provider backends.
 - `classification-service`: Exposes Data Discovery REST API. Uses port 8580 by default.
 - `semantic-guardrail-service`: Conversation risk and PII scanning depends on classification. Uses port 8581 by default.
+- `synthetic-data-service`: Synthetic Data service (--profile synthetic). Uses port 8095 by default.
 
 Restart stack after changes to `docker-compose.yml` file from `protegrity-developer-edition` directory:
 ```

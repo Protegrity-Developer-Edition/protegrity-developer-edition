@@ -5,38 +5,38 @@ networks:
 
 services:
 
-  presidio-provider-service:
-    image: ${DOCKER_PRESIDIO_IMAGE:-ghcr.io/protegrity-developer-edition/presidio-classification-provider:1.0.0-111-98844c64}
-    container_name: presidio_provider
+  pattern-provider-service:
+    image: ${DOCKER_PATTERN_IMAGE:-ghcr.io/protegrity-developer-edition/pattern_classification_provider:1.1.1-213.85581853}
+    container_name: pattern_provider
     networks:
       - protegrity-network
     environment:
-      - logging_config=${PRESIDIO_LOGGING_CONFIG:-}
+      - logging_config=${PATTERN_LOGGING_CONFIG:-}
 
-  roberta-provider-service:
-    image: ${DOCKER_ROBERTA_IMAGE:-ghcr.io/protegrity-developer-edition/roberta-classification-provider:1.0.0-74-fe1d94de}
-    container_name: roberta_provider
+  context-provider-service:
+    image: ${DOCKER_CONTEXT_IMAGE:-ghcr.io/protegrity-developer-edition/context_classification_provider:1.1.1-180.3e9a57f6}
+    container_name: context_provider
     networks:
       - protegrity-network
     environment:
-      - logging_config=${ROBERTA_LOGGING_CONFIG:-}
+      - logging_config=${CONTEXT_LOGGING_CONFIG:-}
 
   classification-service:
-    image: ${DOCKER_CLASSIFICATION_IMAGE:-ghcr.io/protegrity-developer-edition/classification-service:1.0.0-175-073facba}
+    image: ${DOCKER_CLASSIFICATION_IMAGE:-ghcr.io/protegrity-developer-edition/classification_service:1.1.1-300.e37cd434}
     container_name: classification_service
     ports:
-      - "${CLASSIFICATION_PORT:-8580}:80"
+      - "${CLASSIFICATION_PORT:-8580}:8050"
     depends_on:
-      - presidio-provider-service
-      - roberta-provider-service
+      - pattern-provider-service
+      - context-provider-service
     networks:
       - protegrity-network
     environment:
-      - PROVIDERS=[{"name":"Presidio", "address":"http://presidio-provider-service"}, {"name":"Roberta", "address":"http://roberta-provider-service"}]
+      - PROVIDERS=[{"name":"Pattern", "address":"http://pattern-provider-service:8051"}, {"name":"Context", "address":"http://context-provider-service:8052"}]
       - logging_config=${CLASSIFICATION_LOGGING_CONFIG:-}
 
   semantic-guardrail-service:
-    image: ${DOCKER_SEMANTIC_GUARDRAIL_IMAGE:-ghcr.io/protegrity-developer-edition/support-chatbot:1.0.0.8}
+    image: ${DOCKER_SEMANTIC_GUARDRAIL_IMAGE:-ghcr.io/protegrity-developer-edition/semantic-guardrail:1.1.0-17-7aaa035a}
     container_name: semantic_guardrail
     ports:
       - "${SGR_PORT:-8581}:8001"
@@ -46,3 +46,100 @@ services:
       - protegrity-network
     environment:
       - LOG_LEVEL=${SEMANTIC_GUARDRAIL_LOG_LEVEL:-WARNING}
+
+  pty-syndb-service:
+    image: ${DOCKER_PTY_POSTGRES_IMAGE:-ghcr.io/protegrity-developer-edition/postgres_17/main}
+    profiles: [ synthetic ]
+    hostname: pty-postgres
+    user: postgres
+    container_name: pty-postgres
+    ports:
+      - "5432:5432"
+    command: sh /home/postgres/start.sh
+    post_start:
+      - command:
+          - /bin/bash
+          - -c
+          - |
+            sh /home/postgres/configure.sh synuser protegrity synthdb
+            sh /home/postgres/configure.sh mlflowuser mlflowpsw mlflowdb
+        user: postgres
+    networks:
+      - protegrity-network
+
+  synthetic-data-service:
+      image: ${DOCKER_SYNTHETIC_DATA_IMAGE:-ghcr.io/protegrity-developer-edition/privacy/syntheticdata/1.0.0:release-1.0.0_latest}
+      profiles: [ synthetic ]
+      container_name: synthetic-data
+      volumes:
+        - ./samples/python/sample-app-synthetic-data/datastore:/home/synuser/datastore:rw
+        - ./samples/python/sample-app-synthetic-data/config.yaml:/home/synuser/.pty_syn/config.yaml:ro
+      ports:
+        - "${SYN_PORT:-8095}:8095"
+      command: syndata
+      depends_on:
+        - pty-syndb-service
+      networks:
+        - protegrity-network
+
+  synthetic-data-dask-schservice:
+      image: ${DOCKER_SYNTHETIC_DATA_IMAGE:-ghcr.io/protegrity-developer-edition/privacy/syntheticdata/1.0.0:release-1.0.0_latest}
+      profiles: [ synthetic ]
+      container_name: pty-syn-scheduler
+      hostname: pty-syn-scheduler
+      ports:
+        - "8786:8786"
+      user: synuser
+      command: scheduler
+      networks:
+        - protegrity-network
+
+  synthetic-data-dask-workservice:
+      image: ${DOCKER_SYNTHETIC_DATA_IMAGE:-ghcr.io/protegrity-developer-edition/privacy/syntheticdata/1.0.0:release-1.0.0_latest}
+      profiles: [ synthetic ]
+      container_name: pty-dask_worker
+      user: synuser
+      command: worker
+      volumes:
+        - ./samples/python/sample-app-synthetic-data/datastore:/home/synuser/datastore:rw
+        - ./samples/python/sample-app-synthetic-data/config.yaml:/home/synuser/.pty_syn/config.yaml:ro
+      environment:
+        - DASK_SCH_URL=tcp://pty-syn-scheduler:8786
+      networks:
+        - protegrity-network
+  synthetic-data-storage:
+      image: minio/minio:latest
+      profiles: [ synthetic ]
+      hostname: pty-minio
+      container_name: minio
+      restart: unless-stopped
+      ports:
+        - "9000:9000"
+      volumes:
+        - store:/data
+      environment:
+        MINIO_ROOT_USER: synthuser
+        MINIO_ROOT_PASSWORD: protegrity
+      command: server /data --address ":9000"
+      healthcheck:
+        test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      networks:
+        - protegrity-network
+
+  minio-setup:
+      image: minio/mc
+      profiles: [ synthetic ]
+      depends_on:
+        synthetic-data-storage:
+          condition: service_healthy
+      entrypoint: >
+        /bin/sh -c "
+        sleep 10;
+        mc alias set myminio http://pty-minio:9000 synthuser protegrity;
+        mc mb myminio/synthstorage --ignore-existing;
+        "
+      networks:
+        - protegrity-network
+
+volumes:
+  store:

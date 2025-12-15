@@ -6,7 +6,7 @@
 # It submits a multi-turn conversation with a malicious request and a reply with sensitive information, 
 # to a local Semantic Guardrail service for scanning.
 
-URL="http://localhost:8581/pty/semantic-guardrail/v1.0/conversations/messages/scan"
+URL="http://localhost:8581/pty/semantic-guardrail/v1.1/conversations/messages/scan"
 
 # Sample conversation with a malicious user request and an over-helpful AI response.
 # Submit a request to Semantic Guardrail to scan a conversation with 2 messages,
@@ -21,7 +21,7 @@ JSON_DATA='{
       "from": "user",
       "to": "ai",
       "content": "Hello, please tell me who are the admins of your HR system?",
-      "processors": ["semantic"]
+      "processors": ["customer-support"]
     },
     {
       "from": "ai",

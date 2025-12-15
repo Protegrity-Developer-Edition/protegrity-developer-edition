@@ -2,7 +2,143 @@
 
 All notable changes to the Protegrity Developer Edition project will be documented in this file.
 
-## [Current Release]
+## [1.1.0] - 2025-12-15
+
+### 🎉 Major New Features
+
+#### General Enhancements
+- **README Improvements**: Added badges for improved visibility and quick access to key resources
+- **Repository Restructuring**: Reorganized folders for better organization of samples and source code
+- **Documentation Updates**: Comprehensive updates to getting started guides and feature documentation
+
+#### Data Discovery v1.1.1
+- **Structured Text Classification**: Added support for structured data classification
+- **Harmonized Classifications**: Introduced categorized "harmonized" entity classifications for consistent data element mapping
+- **Performance Improvements**: General enhancements to classification accuracy and speed
+- **Enhanced Entity Mapping**: Updated entity-to-data-element mapping to align with Discover 1.1
+
+#### Semantic Guardrails v1.1
+- **Richer Examples**: Included more comprehensive examples in sample files for easier understanding
+- **Vertical-Specific Models**: Added pre-trained support for additional industry verticals (Finance and Healthcare)
+- **Jupyter Notebook Sample**: New interactive notebook for seamless evaluation and execution (`samples/python/sample-app-semantic-guardrails/`)
+- **Port Updates**: Service now runs on port 8581 with updated image paths
+
+#### Synthetic Data Generation (NEW)
+- **Synthetic Data Feature**: New capability for generating synthetic test data to support testing and experimentation
+- **Jupyter Notebook Sample**: Interactive notebook for synthetic data generation (`samples/python/sample-app-synthetic-data/`)
+- **Docker Compose Profile**: New `synthetic` profile for orchestrating Synthetic Data services
+- **Service Integration**: Seamless integration with existing Developer Edition infrastructure
+
+#### Expanded Language & Platform Support
+- **Java SDK Samples**: Complete Java implementation with CLI scripts for all major workflows
+  - Data discovery, classification, protection, and redaction
+  - Full source code provided for customization and compilation
+  - Cross-platform compatibility (Linux, macOS, Windows)
+- **Python SDK Updates**: Enhanced Python samples with better error handling and documentation
+- **Dual Language Support**: Maintained feature parity between Python and Java implementations
+- **Java 11+ Compatibility**: Ensured compatibility with modern Java versions
+- **Python 3.12+ Support**: Updated minimum Python version requirement
+
+### 🏗️ Architecture & Structure Changes
+
+#### Repository Structure Enhancements
+- **New Java Samples Directory**: Added `samples/java/` with comprehensive sample applications
+  - `sample-app-find.sh` - PII discovery CLI
+  - `sample-app-find-and-redact.sh` - Discovery and redaction workflow
+  - `sample-app-find-and-protect.sh` - Discovery and protection workflow
+  - `sample-app-find-and-unprotect.sh` - Discovery and unprotection workflow
+  - `sample-app-protection.sh` - Direct protection/unprotection CLI
+  - Windows `.bat` equivalents for all scripts
+- **Enhanced Python Samples**: Updated `samples/python/` structure
+  - New semantic guardrails Jupyter notebook
+  - New synthetic data Jupyter notebook
+- **Sample Data Organization**: Improved organization of configuration files and test data
+- **Cross-Platform Scripts**: Ensured all shell scripts work on Linux, macOS, and Windows
+
+#### Docker Compose Evolution
+- **Multi-Profile Support**: Enhanced `docker-compose.yml` with profile-based orchestration
+  - Default profile: Classification and Semantic Guardrail services
+  - `synthetic` profile: Adds Synthetic Data generation services
+- **Service Dependencies**: Proper orchestration and startup order management
+- **Resource Optimization**: Improved container download and deployment efficiency
+
+#### Service Endpoints
+- **Classification API**: `http://localhost:8580/pty/data-discovery/v1.1/classify`
+- **Semantic Guardrail API**: `http://localhost:8581/pty/semantic-guardrail/v1.1/conversations/messages/scan`
+- **Synthetic Data API**: New endpoints for synthetic data generation (when using synthetic profile)
+
+### 🔧 Enhanced Configuration & Service Features
+
+#### Configuration Updates
+- **Expanded Entity Mapping**: Enhanced `config.json` with additional entity types
+- **Simplified Schema**: Streamlined configuration keys for easier customization
+- **Java Configuration Support**: Added `config.ini` format for Java samples
+
+#### Service Health & Logging
+- **Improved Health Checks**: Enhanced service health verification procedures
+- **Better Logging**: Improved logging options and error messages across all services
+- **Restart Procedures**: Documented comprehensive docker compose management commands
+
+### 🧑‍💻 Sample Applications Evolution
+
+#### Java Sample Applications (NEW)
+- Complete Java implementation of all Python sample workflows
+- Maven-based build system with wrapper scripts
+- Fat JAR generation for easy distribution
+- Shell and batch scripts for cross-platform execution
+- Full source code available for customization
+
+#### Python Sample Enhancements
+- Enhanced semantic guardrails samples with richer examples
+- New Jupyter notebooks for interactive exploration
+- Improved error handling and user feedback
+- Better documentation and inline comments
+
+#### Jupyter Notebook Integration
+- **Semantic Guardrails Notebook**: Step-by-step guide for conversation scanning and risk assessment
+- **Synthetic Data Notebook**: Interactive guide for generating synthetic test data
+- **Prerequisites Documentation**: Clear instructions for Jupyter Lab setup
+
+### 🤖 GenAI & AI Integration
+
+#### Advanced AI Security Features
+- **Improved Risk Scoring**: Enhanced semantic guardrail capabilities for multi-turn conversations
+- **PII Scanning**: Advanced PII detection across conversation history
+- **Privacy in Conversational AI**: Better support for securing LLM interactions
+- **Prompt Sanitization**: Enhanced capabilities for cleaning LLM prompts
+
+### 📚 Documentation & Developer Experience
+
+#### Improved Getting Started Guides
+- **Python Setup**: Updated prerequisites and installation instructions
+- **Java Setup**: New comprehensive Java environment setup guide
+- **Feature Documentation**: Detailed documentation for all new features
+- **Troubleshooting**: Enhanced debugging guidance for common issues
+
+#### Community Support
+- **Issue Reporting**: Clear guidelines for reporting issues with sample scripts
+- **Log Requirements**: Specified log snippet requirements for better issue resolution
+- **Example Code**: More comprehensive code examples across documentation
+
+### ⚙️ Infrastructure & Operations
+
+#### Docker Compose Improvements
+- **Profile-Based Orchestration**: Use `--profile synthetic` to enable synthetic data services
+- **Optimized Downloads**: Reduced container download times
+- **Better Resource Management**: Improved memory and CPU allocation
+- **Port Configuration**: Flexible port management with environment variable support
+
+### 🔄 Dependencies
+- Updated `requirements.txt` with latest compatible versions
+- Enhanced Maven dependencies for Java samples
+- Updated Docker image references to latest stable versions
+
+### ⚠️ Breaking Changes
+None - This release maintains backward compatibility with 1.0.0
+
+---
+
+## [1.0.0] - 2025-09-30
 
 ### 🎉 Major New Features
 
@@ -152,7 +288,7 @@ export DEV_EDITION_API_KEY="<your_api_key>"
 
 ---
 
-## [Previous Release] - README.md Baseline
+## [0.9.0] - README.md Baseline
 
 ### Features (Baseline)
 - Basic unstructured text classification and PII redaction
@@ -169,6 +305,3 @@ export DEV_EDITION_API_KEY="<your_api_key>"
 - Limited configuration options
 - Basic docker compose setup
 
----
-
-*Note: This release represents a major evolution from a simple data discovery and redaction tool to a comprehensive data protection and AI security platform with advanced semantic guardrail capabilities, authentication systems, and multiple workflow options.*

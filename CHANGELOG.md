@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the Protegrity Developer Edition project will be documented in this file.
+All notable changes to the Protegrity AI Developer Edition project will be documented in this file.
 
 ## [1.1.0] - 2025-12-15
 
@@ -27,7 +27,7 @@ All notable changes to the Protegrity Developer Edition project will be document
 - **Synthetic Data Feature**: New capability for generating synthetic test data to support testing and experimentation
 - **Jupyter Notebook Sample**: Interactive notebook for synthetic data generation (`samples/python/sample-app-synthetic-data/`)
 - **Docker Compose Profile**: New `synthetic` profile for orchestrating Synthetic Data services
-- **Service Integration**: Seamless integration with existing Developer Edition infrastructure
+- **Service Integration**: Seamless integration with existing AI Developer Edition infrastructure
 
 #### Expanded Language & Platform Support
 - **Java SDK Samples**: Complete Java implementation with CLI scripts for all major workflows

@@ -1,6 +1,6 @@
 @echo off
 REM Sample script to run SampleAppFind
-REM Discovers PII in text files using Protegrity Developer Edition
+REM Discovers PII in text files using Protegrity AI Developer Edition
 
 setlocal enabledelayedexpansion
 

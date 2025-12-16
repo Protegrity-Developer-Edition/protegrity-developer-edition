@@ -1,6 +1,6 @@
 #!/bin/sh
 # Sample script to run SampleAppFind
-# Discovers PII in text files using Protegrity Developer Edition
+# Discovers PII in text files using Protegrity AI Developer Edition
 
 set -e
 

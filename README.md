@@ -1,6 +1,6 @@
 <div align="center">
 
-# Protegrity Developer Edition
+# Protegrity AI Developer Edition
 [![Version](https://img.shields.io/badge/version-1.1.0-green.svg?style=flat)](https://github.com/Protegrity-Developer-Edition/protegrity-developer-edition/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](https://github.com/Protegrity-Developer-Edition/protegrity-developer-edition/blob/main/LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg?style=flat)](https://www.python.org/downloads/)
@@ -8,13 +8,13 @@
 [![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat&logo=linux&logoColor=black)](https://www.linux.org/)
 [![Windows](https://img.shields.io/badge/Windows-0078D6?style=flat&logo=windows&logoColor=white)](https://www.microsoft.com/windows/)
 [![macOS](https://img.shields.io/badge/mac%20os-000000?style=flat&logo=macos&logoColor=F0F0F0)](https://www.apple.com/macos/)
-[![PyPI 1.1.0](https://img.shields.io/pypi/v/protegrity-developer-python.svg)](https://pypi.org/project/protegrity-developer-python/)
-[![Anaconda 1.1.0](https://anaconda.org/protegrity/protegrity-developer-python/badges/version.svg?style=flat)](https://anaconda.org/protegrity/protegrity-developer-python)
-[![Maven Central 1.1.0](https://img.shields.io/maven-central/v/com.protegrity/protegrity-developer-edition.svg?style=flat)](https://search.maven.org/artifact/com.protegrity/protegrity-developer-edition)
+[![PyPI 1.1.1](https://img.shields.io/pypi/v/protegrity-developer-python.svg)](https://pypi.org/project/protegrity-developer-python/)
+[![Anaconda 1.1.1](https://anaconda.org/protegrity/protegrity-developer-python/badges/version.svg?style=flat)](https://anaconda.org/protegrity/protegrity-developer-python)
+[![Maven Central 1.0.1](https://img.shields.io/maven-central/v/com.protegrity/protegrity-developer-edition.svg?style=flat)](https://search.maven.org/artifact/com.protegrity/protegrity-developer-edition)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Protegrity-Developer-Edition/protegrity-developer-edition)
 </div>
 
-Welcome to the `protegrity-developer-edition` repository, part of the Protegrity Developer Edition suite. This repository provides a self-contained experimentation platform for discovering and protecting sensitive data using Protegrity’s Data Discovery, Semantic Guardrail, and Protection APIs.
+Welcome to the `protegrity-developer-edition` repository, part of the Protegrity AI Developer Edition suite. This repository provides a self-contained experimentation platform for discovering and protecting sensitive data using Protegrity’s Data Discovery, Semantic Guardrail, and Protection APIs.
 
 ## 🚀 Overview
 
@@ -27,9 +27,9 @@ This repository enables developers to:
 
 **Why This Matters**
 
-AI is transforming every industry, but privacy can’t be an afterthought. Protegrity Developer Edition 1.1.0 makes enterprise-grade data discovery and data protection developer-friendly, so you can build secure, privacy-first solutions for both AI pipelines and traditional data workflows. Whether you’re protecting sensitive information in analytics pipelines, business applications, or next-generation AI, Developer Edition empowers you to innovate confidently while keeping data safe. 
+AI is transforming every industry, but privacy can’t be an afterthought. Protegrity AI Developer Edition 1.1.0 makes enterprise-grade data discovery and data protection developer-friendly, so you can build secure, privacy-first solutions for both AI pipelines and traditional data workflows. Whether you’re protecting sensitive information in analytics pipelines, business applications, or next-generation AI, Protegrity AI Developer Edition empowers you to innovate confidently while keeping data safe. 
 
-Protegrity Developer Edition enables secure data and AI pipelines, including:
+Protegrity AI Developer Edition enables secure data and AI pipelines, including:
 
 - **Privacy in conversational AI:** Sensitive chatbot inputs are protected before they reach generative AI models.
 
@@ -118,16 +118,16 @@ Protegrity Developer Edition enables secure data and AI pipelines, including:
 - [Docker Compose > 2.30 ](https://docs.docker.com/compose/install/)
 - [Git](https://git-scm.com/downloads)
 - For more information about the minimum requirements, refer to [Prerequisites](https://developer.docs.protegrity.com/docs/install/deved_prereq/).
-- Optional: If the Developer Edition is already installed, then complete the following tasks:
+- Optional: If the AI Developer Edition is already installed, then complete the following tasks:
     - Back up any customized files.
-    - Stop any Developer Edition containers that are running using the `docker compose down --remove-orphans` command.
+    - Stop any AI Developer Edition containers that are running using the `docker compose down --remove-orphans` command.
     - Remove the `protegrity-developer-python` module using the `pip uninstall protegrity-developer-python` command.
 
 Linux and Windows users can proceed to [Preparing the system](#preparing-the-system).
 
 ### Additional prerequisites for MacOS
   
-MacOS requires additional steps for Docker and for systems with Apple Silicon chips. Complete the following steps before using Developer Edition. 
+MacOS requires additional steps for Docker and for systems with Apple Silicon chips. Complete the following steps before using AI Developer Edition. 
 
 1.  Complete one of the following options to apply the settings.
     - For Colima: 
@@ -216,7 +216,7 @@ MacOS requires additional steps for Docker and for systems with Apple Silicon ch
 
 ### Preparing the system
 
-Complete the steps provided here to use the samples provided with  Developer Edition. 
+Complete the steps provided here to use the samples provided with AI Developer Edition. 
 
 >   For MacOS, ensure that the [Additional prerequisites for MacOS](#additional-prerequisites-for-macos) steps are complete.
 
@@ -334,7 +334,7 @@ A Jupyter Notebook is provided for using Protegrity Synthetic Data.
 
 #### 7. Setting the environment variables
 
-The next steps has samples that demonstrate how to protect and unprotect data using the Protection APIs. The Protection APIs rely on authenticated access to the Developer Edition API Service.
+The next steps has samples that demonstrate how to protect and unprotect data using the Protection APIs. The Protection APIs rely on authenticated access to the AI Developer Edition API Service.
 - `samples/python/sample-app-find-and-protect.py`
 - `samples/python/sample-app-protection.py`
 - `samples/python/sample-app-find-and-unprotect.py`
@@ -342,7 +342,7 @@ The next steps has samples that demonstrate how to protect and unprotect data us
 - `samples/java/sample-app-protection.sh`
 - `samples/java/sample-app-find-and-unprotect.sh`
 
-Perform the steps from [Additional settings for using the Developer Edition API Service](#additional-settings-for-using-the-developer-edition-api-service) to obtain the API key and password for setting the environment variables. If you already have the API key and password, then proceed to export the environment variables.   
+Perform the steps from [Additional settings for using the AI Developer Edition API Service](#additional-settings-for-using-the-developer-edition-api-service) to obtain the API key and password for setting the environment variables. If you already have the API key and password, then proceed to export the environment variables.   
 
 - For Linux and MacOS:
     ```
@@ -478,9 +478,9 @@ python samples/python/sample-app-protection.py --help
 bash samples/java/sample-app-protection.sh --help
 ```
 
-##### Additional settings for using the Developer Edition API Service
+##### Additional settings for using the AI Developer Edition API Service
   
-Prior registration is required to obtain credentials for accessing the Developer Edition API Service. The following samples demonstrate how to protect and unprotect data using the Protection APIs. The Protection APIs rely on authenticated access to the Developer Edition API Service.
+Prior registration is required to obtain credentials for accessing the AI Developer Edition API Service. The following samples demonstrate how to protect and unprotect data using the Protection APIs. The Protection APIs rely on authenticated access to the AI Developer Edition API Service.
 - `samples/python/sample-app-find-and-protect.py`
 - `samples/python/sample-app-protection.py`
 - `samples/python/sample-app-find-and-unprotect.py`
@@ -499,7 +499,7 @@ Prior registration is required to obtain credentials for accessing the Developer
     -   Country
 4.  Click the Terms & Conditions link and read the terms and conditions.
 5.  Select the check box to accept the terms and conditions.
-    The request is analyzed. After the request is approved, an API key and password to access the Developer Edition API Service is sent to the Work Email specified. Keep the API key and password safe. You need to export them to environment variables for using the Developer Edition API Service.  
+    The request is analyzed. After the request is approved, an API key and password to access the AI Developer Edition API Service is sent to the Work Email specified. Keep the API key and password safe. You need to export them to environment variables for using the AI Developer Edition API Service.  
 
     > **Note**: After completing registration, allow 1-2 minutes for the confirmation email to arrive. If you do not see it in your inbox, check your spam or junk folder before retrying.  
 
@@ -555,7 +555,7 @@ docker compose logs
 ```
 ## 📚 Documentation
 
-- The Protegrity Developer Edition documentation is available at https://developer.docs.protegrity.com/.
+- The Protegrity AI Developer Edition documentation is available at https://developer.docs.protegrity.com/.
 - For more API reference and tutorials, refer to the Developer Portal at https://www.protegrity.com/developers.
 - For more information about Data Discovery, refer to the [Data Discovery documentation]( https://docs.protegrity.com/data-discovery/1.1.1/docs/).
 - For more information about Semantic Guardrails, refer to the [Semantic Guardrails documentation]( https://docs.protegrity.com/sem_guardrail/1.1.0/docs/).

@@ -10,8 +10,8 @@
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>Protegrity Developer Edition Samples</name>
-    <description>Sample applications demonstrating Protegrity Developer Edition functionality</description>
+    <name>Protegrity AI Developer Edition Samples</name>
+    <description>Sample applications demonstrating Protegrity AI Developer Edition functionality</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -25,14 +25,14 @@
         <dependency>
             <groupId>com.protegrity</groupId>
             <artifactId>application-protector-java</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
 
-        <!-- Protegrity Developer Edition -->
+        <!-- Protegrity AI Developer Edition -->
         <dependency>
             <groupId>com.protegrity</groupId>
             <artifactId>protegrity-developer-edition</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
 
         <!-- Jackson for JSON processing -->

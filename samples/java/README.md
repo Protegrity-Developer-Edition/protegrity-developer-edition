@@ -1,4 +1,4 @@
-# Protegrity Developer Edition - Java Samples
+# Protegrity AI Developer Edition - Java Samples
 
 Sample applications demonstrating how to use Protegrity's Application Protector Java SDK and Developer Edition utilities for data discovery and protection.
 
@@ -6,7 +6,7 @@ Sample applications demonstrating how to use Protegrity's Application Protector 
 
 - Java 8 or later
 - Maven 3.6+ (or use the included Maven wrapper `./mvnw`)
-- Protegrity Developer Edition credentials:
+- Protegrity AI Developer Edition credentials:
   - `DEV_EDITION_EMAIL`
   - `DEV_EDITION_PASSWORD`
   - `DEV_EDITION_API_KEY`
@@ -166,9 +166,9 @@ samples/java/
 ## Dependencies
 
 The project uses:
-- **Application Protector Java** (`com.protegrity:application-protector-java:1.0.0`)
+- **Application Protector Java** (`com.protegrity:application-protector-java:1.0.1`)
   - Core data protection SDK
-- **Protegrity Developer Edition** (`com.protegrity:protegrity-developer-edition:1.0.0`)
+- **Protegrity Developer Edition** (`com.protegrity:protegrity-developer-edition:1.0.1`)
   - Data discovery and advanced utilities
 - **Jackson** - JSON processing
 - **SLF4J/Logback** - Logging

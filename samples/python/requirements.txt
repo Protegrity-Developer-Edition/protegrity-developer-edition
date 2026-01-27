@@ -7,3 +7,4 @@ tqdm
 seaborn
 jupyterlab
 notebook
+ipywidgets

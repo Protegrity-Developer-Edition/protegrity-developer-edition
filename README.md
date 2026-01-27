@@ -14,7 +14,7 @@
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Protegrity-Developer-Edition/protegrity-developer-edition)
 </div>
 
-Welcome to the `protegrity-developer-edition` repository, part of the Protegrity AI Developer Edition suite. This repository provides a self-contained experimentation platform for discovering and protecting sensitive data using Protegrity’s Data Discovery, Semantic Guardrail, and Protection APIs.
+Welcome to the `protegrity-developer-edition` repository, part of the Protegrity AI Developer Edition suite. This repository provides a self-contained experimentation platform for discovering and protecting sensitive data using Protegrity’s Data Discovery, Semantic Guardrail, and Protection APIs. Use the online [Protegrity notebook](https://mybinder.org/v2/gh/Protegrity-Developer-Edition/protegrity-developer-edition/main?filepath=samples/python/sample-app-protect-unprotect/getting-started-protection.ipynb) to quickly test tokenization.
 
 ## 🚀 Overview
 
@@ -46,9 +46,18 @@ Protegrity AI Developer Edition enables secure data and AI pipelines, including:
 ### Quick Links
 
 - [Prerequisites](#prerequisites)
-- [Additional prerequisites for MacOS](#additional-prerequisites-for-macos)
 - [Preparing the system](#preparing-the-system)
+- [Additional prerequisites for MacOS](#additional-prerequisites-for-macos)
 - If your setup is ready, [run the samples](#running-the-sample-applications)
+
+### Repositories
+
+Protegrity AI Developer Edition provides the files required and also the source code for customization. The following repositories are available:
+
+-   [protegrity-developer-edition](https://github.com/Protegrity-Developer-Edition/protegrity-developer-edition): This is the main repository with the files and samples required for experiencing Protegrity AI Developer Edition.
+-   [protegrity-developer-python](https://github.com/Protegrity-Developer-Edition/protegrity-developer-python): This is the repository with the source code for the Python module. Use the files in this repository only to customize and use the Python module.
+-   [protegrity-developer-java](https://github.com/Protegrity-Developer-Edition/protegrity-developer-java): This is the repository with the source code for the Java library. Use the files in this repository only to customize and use the Java library.
+
 
 ## 📦 Repository Structure 
 
@@ -68,6 +77,8 @@ Protegrity AI Developer Edition enables secure data and AI pipelines, including:
 │   └── sample-guardrail-python.py
 └── samples/                             # High-level SDK samples (Python & Java)
     ├── python/
+    │   ├── sample-app-protect-unprotect/    # Protect / Unprotect Jupyter Notebook samples
+    │   │   ├── getting-started-protection.ipynb
     │   ├── sample-app-semantic-guardrails/  # Semantic Guardrail Jupyter Notebook samples
     │   │   ├── Sample Application.ipynb
     │   ├── sample-app-synthetic-data/       # Synthetic Data Jupyter Notebook samples
@@ -122,97 +133,6 @@ Protegrity AI Developer Edition enables secure data and AI pipelines, including:
     - Back up any customized files.
     - Stop any AI Developer Edition containers that are running using the `docker compose down --remove-orphans` command.
     - Remove the `protegrity-developer-python` module using the `pip uninstall protegrity-developer-python` command.
-
-Linux and Windows users can proceed to [Preparing the system](#preparing-the-system).
-
-### Additional prerequisites for MacOS
-  
-MacOS requires additional steps for Docker and for systems with Apple Silicon chips. Complete the following steps before using AI Developer Edition. 
-
-1.  Complete one of the following options to apply the settings.
-    - For Colima: 
-        1. Open a command prompt.
-        2. Run the following command.
-            ```
-            colima start --vm-type vz --vz-rosetta --memory 8
-            ```
-    - For Docker Desktop: 
-        1.  Open Docker Desktop.
-        2.  Go to **Settings > General**.
-        3.  Enable the following check boxes:
-            -   **Use Virtualization framework**
-            -   **Use Rosetta for x86_64/amd64 emulation on Apple Silicon**
-        4.  Click **Apply & restart**.
-
-2.  Update one of the following options for resolving  certificate related errors.
-    - For Colima:
-        1.  Open a command prompt.
-        2.  Navigate and open the following file.
-    
-            ```
-            ~/.colima/default/colima.yaml
-            ```
-        3.  Update the following configuration in `colima.yaml` to add the path for obtaining the required images.
-
-            Before update:
-            ```
-            docker: {}
-            ```
-      
-            After update:
-            ```
-            docker:
-                insecure-registries:
-                    - ghcr.io
-            ```
-        4. Save and close the file.
-        5. Stop colima.
-            ```
-            colima stop
-            ```
-        6. Close and start the command prompt.
-        7. Start colima.
-            ```
-            colima start --vm-type vz --vz-rosetta --memory 8
-            ```
-    - For Docker Desktop: 
-        1.  Open Docker Desktop.
-        2.  Click the gear or settings icon.
-        3.  Click **Docker Engine** from the sidebar. The editor with your current Docker daemon configuration `daemon.json` opens.
-        4.  Locate and add the `insecure-registries` key in the root JSON object. Ensure that you add a comma after the last value in the existing configuration.
-
-            After update:
-            ```
-            {
-                .
-                .
-                <existing configuration>,
-                "insecure-registries": [
-                    "ghcr.io",
-                    "githubusercontent.com"
-                ]
-            }
-            ```
-
-        5.  Click **Apply & Restart** to save the changes and restart Docker Desktop.
-        6.  Verify: After Docker restarts, run `docker info` in your terminal and confirm that the required registry is listed under **Insecure Registries**.
-
-3.  Optional: If the *The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested* error is displayed.
-
-    1.  Start a command prompt.
-    2.  Navigate and open the following file.
-
-        ```
-        ~/.docker/config.json
-        ```
-    3. Add the following parameter.
-        ```
-        "default-platform": "linux/amd64"
-        ```
-    4. Save and close the file.
-    5. Some services are profile enabled, ensure to use the `--profile` flag while starting the services.
-       - Run the `docker compose up -d` from the `protegrity-developer-edition` directory to start the default services.
-       - Run the `docker compose --profile synthetic up -d` from the `protegrity-developer-edition` directory to start the `synthetic` profiled services.
 
 ### Preparing the system
 
@@ -342,7 +262,7 @@ The next steps has samples that demonstrate how to protect and unprotect data us
 - `samples/java/sample-app-protection.sh`
 - `samples/java/sample-app-find-and-unprotect.sh`
 
-Perform the steps from [Additional settings for using the AI Developer Edition API Service](#additional-settings-for-using-the-developer-edition-api-service) to obtain the API key and password for setting the environment variables. If you already have the API key and password, then proceed to export the environment variables.   
+Perform the steps from [Additional settings for using the AI Developer Edition API Service](#additional-settings-for-using-the-ai-developer-edition-api-service) to obtain the API key and password for setting the environment variables. If you already have the API key and password, then proceed to export the environment variables.   
 
 - For Linux and MacOS:
     ```
@@ -478,7 +398,7 @@ python samples/python/sample-app-protection.py --help
 bash samples/java/sample-app-protection.sh --help
 ```
 
-##### Additional settings for using the AI Developer Edition API Service
+### Additional settings for using the AI Developer Edition API Service
   
 Prior registration is required to obtain credentials for accessing the AI Developer Edition API Service. The following samples demonstrate how to protect and unprotect data using the Protection APIs. The Protection APIs rely on authenticated access to the AI Developer Edition API Service.
 - `samples/python/sample-app-find-and-protect.py`
@@ -489,7 +409,7 @@ Prior registration is required to obtain credentials for accessing the AI Develo
 - `samples/java/sample-app-find-and-unprotect.sh`
 
 1.  Open a web browser.
-2.  Navigate to [https://www.protegrity.com/developers/get-api-credentials ](https://www.protegrity.com/developers/get-api-credentials).
+2.  Navigate to [https://www.protegrity.com/developers/dev-edition-api ](https://www.protegrity.com/developers/dev-edition-api).
 3.  Specify the following details:
     -   First Name
     -   Last Name
@@ -502,6 +422,95 @@ Prior registration is required to obtain credentials for accessing the AI Develo
     The request is analyzed. After the request is approved, an API key and password to access the AI Developer Edition API Service is sent to the Work Email specified. Keep the API key and password safe. You need to export them to environment variables for using the AI Developer Edition API Service.  
 
     > **Note**: After completing registration, allow 1-2 minutes for the confirmation email to arrive. If you do not see it in your inbox, check your spam or junk folder before retrying.  
+    
+### Additional prerequisites for MacOS
+  
+MacOS requires additional steps for Docker and for systems with Apple Silicon chips. Complete the following steps before using AI Developer Edition. 
+
+1.  Complete one of the following options to apply the settings.
+    - For Colima: 
+        1. Open a command prompt.
+        2. Run the following command.
+            ```
+            colima start --vm-type vz --vz-rosetta --memory 8
+            ```
+    - For Docker Desktop: 
+        1.  Open Docker Desktop.
+        2.  Go to **Settings > General**.
+        3.  Enable the following check boxes:
+            -   **Use Virtualization framework**
+            -   **Use Rosetta for x86_64/amd64 emulation on Apple Silicon**
+        4.  Click **Apply & restart**.
+
+2.  Update one of the following options for resolving  certificate related errors.
+    - For Colima:
+        1.  Open a command prompt.
+        2.  Navigate and open the following file.
+    
+            ```
+            ~/.colima/default/colima.yaml
+            ```
+        3.  Update the following configuration in `colima.yaml` to add the path for obtaining the required images.
+
+            Before update:
+            ```
+            docker: {}
+            ```
+      
+            After update:
+            ```
+            docker:
+                insecure-registries:
+                    - ghcr.io
+            ```
+        4. Save and close the file.
+        5. Stop colima.
+            ```
+            colima stop
+            ```
+        6. Close and start the command prompt.
+        7. Start colima.
+            ```
+            colima start --vm-type vz --vz-rosetta --memory 8
+            ```
+    - For Docker Desktop: 
+        1.  Open Docker Desktop.
+        2.  Click the gear or settings icon.
+        3.  Click **Docker Engine** from the sidebar. The editor with your current Docker daemon configuration `daemon.json` opens.
+        4.  Locate and add the `insecure-registries` key in the root JSON object. Ensure that you add a comma after the last value in the existing configuration.
+
+            After update:
+            ```
+            {
+                .
+                .
+                <existing configuration>,
+                "insecure-registries": [
+                    "ghcr.io",
+                    "githubusercontent.com"
+                ]
+            }
+            ```
+
+        5.  Click **Apply & Restart** to save the changes and restart Docker Desktop.
+        6.  Verify: After Docker restarts, run `docker info` in your terminal and confirm that the required registry is listed under **Insecure Registries**.
+
+3.  Optional: If the *The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested* error is displayed.
+
+    1.  Start a command prompt.
+    2.  Navigate and open the following file.
+
+        ```
+        ~/.docker/config.json
+        ```
+    3. Add the following parameter.
+        ```
+        "default-platform": "linux/amd64"
+        ```
+    4. Save and close the file.
+    5. Some services are profile enabled, ensure to use the `--profile` flag while starting the services.
+       - Run the `docker compose up -d` from the `protegrity-developer-edition` directory to start the default services.
+       - Run the `docker compose --profile synthetic up -d` from the `protegrity-developer-edition` directory to start the `synthetic` profiled services.
 
 ## 📄 Configuration
 
@@ -560,8 +569,8 @@ docker compose logs
 - For more information about Data Discovery, refer to the [Data Discovery documentation]( https://docs.protegrity.com/data-discovery/1.1.1/docs/).
 - For more information about Semantic Guardrails, refer to the [Semantic Guardrails documentation]( https://docs.protegrity.com/sem_guardrail/1.1.0/docs/).
 - For more information about Synthetic Data, refer to the [Synthetic Data documentation]( https://docs.protegrity.com/synthetic-data/1.0.0/docs/).
-- For more information about Application Protector Python, refer to the [Application Protector Python documentation]( https://docs.protegrity.com/10.0/protectors/application_protector/ap_python/).
-- For more information about Application Protector Java, refer to the [Application Protector Java documentation]( https://docs.protegrity.com/10.0/protectors/application_protector/ap_java/).
+- For more information about Application Protector Python, refer to the [Application Protector Python documentation]( https://docs.protegrity.com/protectors/10.0/docs/ap/ap_python/).
+- For more information about Application Protector Java, refer to the [Application Protector Java documentation]( https://docs.protegrity.com/protectors/10.0/docs/ap/ap_java/).
 
 ## 📢 Community & Support
 

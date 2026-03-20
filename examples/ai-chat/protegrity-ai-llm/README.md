@@ -1,5 +1,4 @@
-# Protegrity AI (LLM)
-
+# Protegrity AI (LLM) -
 ## What this example does
 
 This example provides a secure, full-stack LLM chatbot that scans user prompts and model responses for sensitive data, applies guardrail checks, and enforces privacy controls before content is returned to users.

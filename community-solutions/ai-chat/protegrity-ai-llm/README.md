@@ -1,4 +1,4 @@
-# Protegrity AI (LLM) -
+# Protegrity AI (LLM)
 ## What this example does
 
 This example provides a secure, full-stack LLM chatbot that scans user prompts and model responses for sensitive data, applies guardrail checks, and enforces privacy controls before content is returned to users.
@@ -40,7 +40,7 @@ Developer and platform teams need a production-style reference for building GenA
 
 ## What it demonstrates
 
-- Industry-first sample packaging under `examples/ai-chat`.
+- Industry-first sample packaging under `community-solutions/ai-chat`.
 - Protegrity data discovery and redaction integrated in chat workflow.
 - Semantic guardrails applied before and after LLM interaction.
 - Provider-agnostic LLM configuration through environment variables (Azure OpenAI, OpenAI, Anthropic, Bedrock).
@@ -81,7 +81,7 @@ Diagram and implementation docs:
 
 ### Setup (env vars)
 
-From this folder (`examples/ai-chat/protegrity-ai-llm`):
+From this folder (`community-solutions/ai-chat/protegrity-ai-llm`):
 
 ```bash
 cp app/backend/.env.example app/backend/.env

@@ -1,0 +1,59 @@
+# ==============================================================================
+# Protegrity AI Developer Edition Trial Center — Docker Compose
+#
+# This compose file deploys ONLY the Trial Center UI.
+#
+# The Protegrity backend services (Semantic Guardrail and Data Discovery /
+# Classification) are a PREREQUISITE and must already be running and reachable
+# from this host before you start the Trial Center. See docs/GETTING_STARTED.md.
+#
+# By default the UI talks to backends on the host via `host.docker.internal`,
+# which works on Docker Desktop (macOS/Windows) and on Linux thanks to the
+# `extra_hosts: host-gateway` mapping below. Override the URLs in `.env` if
+# your backends live elsewhere (remote host, different port, etc.).
+#
+# Usage:
+#   docker compose up -d --build     # Build and start the Trial Center UI
+#   docker compose ps                # Check status
+#   docker compose logs -f           # Tail logs
+#   docker compose down              # Stop and remove
+#
+# Or use the deployment script:
+#   ./scripts/deploy.sh              # Handles prerequisites + launch
+# ==============================================================================
+
+services:
+  # ─── Trial Center UI ──────────────────────────────────────────────────────
+  trial-center:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: protegrity/trial-center:${TRIAL_CENTER_VERSION:-1.1.0}
+    container_name: trial-center
+    ports:
+      - "${TRIAL_CENTER_PORT:-8502}:8502"
+    environment:
+      - DEV_EDITION_EMAIL=${DEV_EDITION_EMAIL:-}
+      - DEV_EDITION_PASSWORD=${DEV_EDITION_PASSWORD:-}
+      - DEV_EDITION_API_KEY=${DEV_EDITION_API_KEY:-}
+      # Backends default to the host machine. Override in .env if needed.
+      - SEMANTIC_GUARDRAIL_URL=${SEMANTIC_GUARDRAIL_URL:-http://host.docker.internal:8581}
+      - CLASSIFICATION_SERVICE_URL=${CLASSIFICATION_SERVICE_URL:-http://host.docker.internal:8580}
+      - STREAMLIT_SERVER_PORT=8502
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+      - STREAMLIT_SERVER_HEADLESS=true
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    # Required so `host.docker.internal` resolves on Linux as well as Docker Desktop.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test:
+        - "CMD"
+        - "python"
+        - "-c"
+        - "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8502/_stcore/health',timeout=3).status==200 else 1)"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    restart: unless-stopped

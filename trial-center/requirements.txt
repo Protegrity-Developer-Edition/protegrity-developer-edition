@@ -1,0 +1,23 @@
+# Protegrity Developer Edition Trial Center - Python Dependencies
+# Python 3.12.11+ required (updated for v1.1.0 compatibility)
+
+# CRITICAL: Protegrity Developer Edition SDK v1.1.1
+# This package is REQUIRED for all discovery, protection, and redaction operations
+# Available on PyPI: https://pypi.org/project/protegrity-developer-python/
+protegrity-developer-python>=1.1.1
+
+# Web Framework (>=1.37 for CVE-2024-42474 static-file path traversal fix)
+streamlit>=1.37,<2
+
+# HTTP Client (>=2.32.0 for CVE-2024-35195 cert verification fix)
+requests>=2.32.0,<3
+
+# Data Handling
+pandas>=2.1.0,<3
+
+# Configuration Management
+python-dotenv>=1.0.0,<2
+pyyaml>=6.0.1,<7
+
+# JSON Processing (standard library, but listing for clarity)
+# json - included in Python standard library

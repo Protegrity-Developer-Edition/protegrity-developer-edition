@@ -1,0 +1,106 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trial-center"
+version = "1.1.0"
+description = "Protegrity Developer Edition Trial Center - Testing UI for AI data protection"
+readme = "README.md"
+authors = [{name = "Protegrity CAQE Team", email = "caqe@protegrity.com"}]
+requires-python = ">=3.12"
+license = {text = "Proprietary"}
+dependencies = [
+    "protegrity-developer-python>=1.1.1",
+    "streamlit>=1.37,<2",
+    "requests>=2.32.0,<3",
+    "pandas>=2.1.0,<3",
+    "python-dotenv>=1.0.0,<2",
+    "pyyaml>=6.0.1,<7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.12.0",
+    "ruff>=0.1.0",
+    "mypy>=1.6.0",
+    "black>=23.0.0",
+    "bandit>=1.7.0",
+    "safety>=2.3.0",
+]
+
+[project.scripts]
+trial-center = "trial_center.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+trial_center = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--cov=src/trial_center",
+    "--cov-report=html",
+    "--cov-report=term-missing",
+    "--cov-fail-under=70",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "e2e: marks tests as end-to-end tests",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "SIM", # flake8-simplify
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]  # Allow unused imports in __init__.py
+"tests/*" = ["S101"]  # Allow assert in tests
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "streamlit.*",
+    "protegrity_developer_python.*",
+]
+ignore_missing_imports = true
+
+[tool.black]
+line-length = 100
+target-version = ['py312']

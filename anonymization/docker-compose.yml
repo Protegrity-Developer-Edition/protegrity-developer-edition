@@ -1,0 +1,59 @@
+networks:
+  protegrity-network:
+    name: ${DOCKER_NETWORK_NAME:-protegrity-network}
+    external: false
+
+services:
+
+  pty-anondb-service:
+    image: ${DOCKER_PTY_POSTGRES_IMAGE:-${REGISTRY:-ghcr.io/protegrity-ai-developer-edition}/postgres/17:${PTY_POSTGRES_TAG:-latest}}
+    hostname: pty-anon-postgres
+    user: postgres
+    container_name: pty-anon-postgres
+    ports:
+      - "${ANON_DB_PORT:-5435}:5432"
+    command: sh /home/postgres/start.sh
+    post_start:
+      - command:
+          - /bin/bash
+          - -c
+          - |
+            ./configure.sh mlopsuser mlopspsw mlopsdb
+            ./configure.sh jobstateuser jobstatepsw jobstatedb
+        user: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - protegrity-network
+
+  anon-service:
+    image: ${DOCKER_ANONYMIZATION_IMAGE:-${REGISTRY:-ghcr.io/protegrity-ai-developer-edition}/anonymization:${ANONYMIZATION_TAG:-2.0.0-6-6c8dca25-dev}}
+    ports:
+      - ${ANON_PORT:-8085}:8085
+    volumes:
+      - mlops_artifacts:/home/anonuser/app/mlops_artifacts
+    container_name: anon-service
+    networks:
+      - protegrity-network
+    environment:
+      - PYTHONPATH=/home/anonuser/app
+      - APP_COMPUTE_BACKEND= "local"
+      - APP_API_PORT=${ANON_PORT:-8085}
+      - APP_MLOPS__DATABASE_DSN=postgresql://mlopsuser:mlopspsw@pty-anondb-service:5432/mlopsdb
+      - APP_JOB_STATE__DSN=postgresql://jobstateuser:jobstatepsw@pty-anondb-service:5432/jobstatedb
+    depends_on:
+      pty-anondb-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c \"import urllib.request; urllib.request.urlopen('http://localhost:${ANON_PORT:-8085}/pty/anonymization/v3/health')\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    restart: unless-stopped
+
+volumes:
+  mlops_artifacts:

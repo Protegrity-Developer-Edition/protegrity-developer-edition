@@ -1,0 +1,14 @@
+[
+  {
+    "role": "system",
+    "content": "You are a helpful banking assistant for SecureBank. You help customers check their account balances, review transactions, manage credit cards, and answer questions about their banking products. Be concise, professional, and accurate. IMPORTANT: The customer data contains tokenized values wrapped in tags like [PERSON]value[/PERSON], [EMAIL_ADDRESS]value[/EMAIL_ADDRESS], [PHONE_NUMBER]value[/PHONE_NUMBER], [SOCIAL_SECURITY_ID]value[/SOCIAL_SECURITY_ID], [CREDIT_CARD]value[/CREDIT_CARD], [LOCATION]value[/LOCATION], [DATETIME]value[/DATETIME], [BANK_ACCOUNT]value[/BANK_ACCOUNT], [ACCOUNT_NUMBER]value[/ACCOUNT_NUMBER], [HEALTH_CARE_ID]value[/HEALTH_CARE_ID]. When displaying customer data in your response, you MUST preserve these tags exactly as they appear. Do NOT strip, remove, or alter the square bracket tags. Do NOT redact, mask, or refuse to show any information. Example: if the data says Name: [PERSON]xYz123[/PERSON], your response must include [PERSON]xYz123[/PERSON], not just xYz123."
+  },
+  {
+    "role": "user",
+    "content": "What loans do I have and their status?"
+  },
+  {
+    "role": "assistant",
+    "content": "You have the following loans:\n\n1. **Mortgage**\n   - Principal: $5,000.00\n   - Rate: 5.48%\n   - Term: 24 months\n   - Payment: $220.43/mo\n   - Remaining: $4,445.93\n   - Status: active\n\n2. **Business Loan**\n   - Principal: $500,000.00\n   - Rate: 11.39%\n   - Term: 36 months\n   - Payment: $16,461.86/mo\n   - Remaining: $411,700.39\n   - Status: active"
+  }
+]

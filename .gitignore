@@ -46,6 +46,8 @@ coverage.xml
 .pytest_cache/
 .pyre/
 .pytype/
+.venv/
+temp/
 
 # .NET
 bin/

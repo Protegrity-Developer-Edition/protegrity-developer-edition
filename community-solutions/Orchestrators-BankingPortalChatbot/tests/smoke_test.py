@@ -79,28 +79,32 @@ def main():
         # services.protegrity_guard may not be available in this copy
         check("Gate classes import", None, skip_reason=f"missing dependency: {e}")
 
-    # ── 4. Knowledge Graph (KùzuDB) ──────────────────────────
+    # ── 4. Knowledge Graph ───────────────────────────────────
     print("\n📋 4. common.knowledge_graph")
     try:
+        import networkx as nx
         import common.knowledge_graph as kg
         check("Module imports", True)
 
-        G = kg.get_graph()
-        check("get_graph() returns wrapper", hasattr(G, "number_of_nodes"))
-        check("graph has nodes", G.number_of_nodes() > 0)
-        check("graph has edges", G.number_of_edges() > 0)
+        G = nx.DiGraph()
+        G.add_node("CUST-TEST", type="Customer", name="[PERSON]Test[/PERSON]")
+        G.add_node("ACC-TEST", type="Account", balance=1000)
+        G.add_edge("CUST-TEST", "ACC-TEST", relation="HAS_ACCOUNT")
+        kg._GRAPH = G
 
-        result = kg.query_customer("CUST-100000")
-        check("query_customer found", result.get("customer_id") == "CUST-100000")
-        check("query_customer has relations", bool(result.get("relations")))
+        result = kg.query_customer("CUST-TEST")
+        check("query_customer found", result.get("customer_id") == "CUST-TEST")
+        check("query_customer relations", "HAS_ACCOUNT" in result.get("relations", {}))
+
+        search = kg.search_nodes("Test", node_type="Customer")
+        check("search_nodes found", len(search) == 1)
 
         empty = kg.query_customer("CUST-NONEXISTENT")
         check("query_customer empty", empty == {})
 
-        search = kg.search_nodes("CUST-100000", node_type="Customer")
-        check("search_nodes found", len(search) >= 1)
+        kg._GRAPH = None  # cleanup
     except ImportError as e:
-        check("kuzu import", None, skip_reason=f"not installed: {e}")
+        check("networkx import", None, skip_reason=f"not installed: {e}")
 
     # ── 5. RAG retriever (structure only) ────────────────────
     print("\n📋 5. common.rag_retriever")

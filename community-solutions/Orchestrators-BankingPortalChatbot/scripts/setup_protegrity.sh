@@ -12,134 +12,26 @@ set -euo pipefail
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 CLONE_BASE="${REPO_DIR}/.protegrity-install"
 
-RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; NC='\033[0m'
-
-# ── Ensure Python >= 3.12.11 is available ─────────────────────────────
-ensure_python() {
-    # Find the best available python
-    local py=""
-    for candidate in python3.13 python3.12 python3; do
-        if command -v "$candidate" &>/dev/null; then
-            py="$candidate"; break
-        fi
-    done
-    if [ -z "$py" ]; then
-        echo -e "${RED}✖${NC} No Python interpreter found."
-        exit 1
-    fi
-
-    local ver major minor patch
-    ver=$("$py" -c "import sys; print('{}.{}.{}'.format(*sys.version_info[:3]))")
-    IFS='.' read -r major minor patch <<< "$ver"
-    patch="${patch:-0}"
-
-    if (( major >= 3 && minor >= 12 && patch >= 11 )) || (( major >= 3 && minor >= 13 )); then
-        PYTHON_CMD="$py"
-        return 0
-    fi
-
-    echo -e "${YELLOW}⚠${NC}  Python $ver detected — need >= 3.12.11 for Protegrity SDK."
-
-    local os_type
-    os_type=$(uname -s)
-
-    if [[ "$os_type" == "Darwin" ]]; then
-        # ── macOS: use Homebrew ──────────────────────────────────────
-        if command -v brew &>/dev/null; then
-            echo "  Attempting to install Python 3.13 via Homebrew …"
-            if brew install python@3.13 2>/dev/null; then
-                # Homebrew puts it at python3.13 or via the formula's bin
-                local brew_py=""
-                if command -v python3.13 &>/dev/null; then
-                    brew_py="python3.13"
-                else
-                    brew_py="$(brew --prefix python@3.13)/bin/python3.13"
-                fi
-                if [[ -x "$(command -v $brew_py)" ]]; then
-                    local new_ver
-                    new_ver=$($brew_py -c "import sys; print('{}.{}.{}'.format(*sys.version_info[:3]))" 2>/dev/null || echo "0.0.0")
-                    echo -e "${GREEN}✔${NC}  Python $new_ver installed successfully."
-                    PYTHON_CMD="$brew_py"
-                    return 0
-                fi
-            fi
-        fi
-        echo ""
-        echo "  Could not auto-install a compatible Python."
-        echo "  Install Python 3.13 via Homebrew:"
-        echo "    brew install python@3.13"
-        echo "  Or download from https://www.python.org/downloads/"
-        echo "  Then re-run this script."
-        exit 1
-    fi
-
-    # ── Linux: try deadsnakes PPA (Ubuntu/Debian) ───────────────────
-    if command -v apt-get &>/dev/null; then
-        echo "  Attempting to install a compatible Python via deadsnakes PPA …"
-        sudo add-apt-repository -y ppa:deadsnakes/ppa 2>/dev/null || true
-        sudo apt-get update -qq 2>/dev/null || true
-
-        # Try Python 3.13 first (deadsnakes doesn't ship newer 3.12.x on noble)
-        if sudo apt-get install -y python3.13 python3.13-venv python3.13-dev 2>/dev/null; then
-            local new_ver
-            new_ver=$(python3.13 -c "import sys; print('{}.{}.{}'.format(*sys.version_info[:3]))" 2>/dev/null || echo "0.0.0")
-            echo -e "${GREEN}✔${NC}  Python $new_ver installed successfully."
-            PYTHON_CMD="python3.13"
-            return 0
-        fi
-
-        # Fall back to Python 3.12 (may work on older Ubuntu releases)
-        if sudo apt-get install -y python3.12 python3.12-venv python3.12-dev 2>/dev/null; then
-            local new_ver12
-            new_ver12=$(python3.12 -c "import sys; print('{}.{}.{}'.format(*sys.version_info[:3]))" 2>/dev/null || echo "0.0.0")
-            local nma nmi npa
-            IFS='.' read -r nma nmi npa <<< "$new_ver12"
-            npa="${npa:-0}"
-            if (( nma >= 3 && nmi >= 12 && npa >= 11 )); then
-                echo -e "${GREEN}✔${NC}  Python $new_ver12 installed successfully."
-                PYTHON_CMD="python3.12"
-                return 0
-            fi
-        fi
-    fi
-
-    echo ""
-    echo "  Could not auto-install a compatible Python."
-    echo "  Install Python 3.13 (recommended) or Python 3.12.11+ manually:"
-    echo "    sudo add-apt-repository ppa:deadsnakes/ppa"
-    echo "    sudo apt-get update && sudo apt-get install -y python3.13 python3.13-venv"
-    echo "  Then re-run this script."
-    exit 1
-}
-
-PYTHON_CMD=""
-ensure_python
-
 # Auto-create and activate venv if not already in one
 VENV_DIR="${REPO_DIR}/.venv"
 if [ -z "${VIRTUAL_ENV:-}" ]; then
     if [ ! -d "$VENV_DIR" ] || [ ! -f "$VENV_DIR/bin/activate" ]; then
         rm -rf "$VENV_DIR"
         echo "Creating virtual environment at ${VENV_DIR} …"
-        if ! "$PYTHON_CMD" -m venv "$VENV_DIR" 2>/dev/null; then
+        if ! python3 -m venv "$VENV_DIR" 2>/dev/null; then
             # Auto-install python3-venv if missing
-            PYVER=$("$PYTHON_CMD" -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
+            PYVER=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
             echo "python3-venv not found — installing …"
-            if [[ "$(uname -s)" == "Darwin" ]]; then
-                echo -e "${RED}✖${NC} venv module missing. Reinstall Python via Homebrew:"
-                echo "    brew install python@${PYVER}"
-                exit 1
-            fi
             sudo apt-get update -qq 2>/dev/null
             sudo apt-get install -y "python${PYVER}-venv" 2>/dev/null \
                 || sudo apt-get install -y python3-venv 2>/dev/null \
                 || {
-                    echo -e "${RED}✖${NC} Failed to install python3-venv. Please install manually:"
+                    echo -e "\033[0;31m✖\033[0m Failed to install python3-venv. Please install manually:"
                     echo "    sudo apt-get install -y python${PYVER}-venv"
                     exit 1
                 }
             rm -rf "$VENV_DIR"
-            "$PYTHON_CMD" -m venv "$VENV_DIR"
+            python3 -m venv "$VENV_DIR"
         fi
     fi
     echo "Activating virtual environment …"
@@ -170,6 +62,8 @@ fi
 EDITION_REPO="https://github.com/Protegrity-Developer-Edition/protegrity-developer-edition.git"
 PYTHON_REPO="https://github.com/Protegrity-Developer-Edition/protegrity-developer-python.git"
 
+RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; NC='\033[0m'
+
 info()  { echo -e "${GREEN}✔${NC} $*"; }
 warn()  { echo -e "${YELLOW}⚠${NC} $*"; }
 error() { echo -e "${RED}✖${NC} $*"; }
@@ -180,15 +74,6 @@ check_docker() {
     if ! command -v docker &>/dev/null; then
         error "Docker is not installed. Please install Docker first."
         echo "  → https://docs.docker.com/get-docker/"
-        return 1
-    fi
-    # Distinguish "permission denied" from "daemon not running"
-    local docker_err
-    docker_err=$(docker info 2>&1) || true
-    if echo "$docker_err" | grep -qi "permission denied"; then
-        error "Docker socket permission denied."
-        echo "  Fix with:  sudo usermod -aG docker \$USER && newgrp docker"
-        echo "  Then re-run this script."
         return 1
     fi
     if ! docker info &>/dev/null; then
@@ -247,21 +132,6 @@ install_docker() {
     echo ""
     echo "━━━ Installing Docker & Docker Compose ━━━"
 
-    case "$(uname -s)" in
-        Darwin)
-            echo "macOS detected."
-            if command -v brew &>/dev/null; then
-                echo "Installing Docker Desktop via Homebrew …"
-                brew install --cask docker
-                echo "Please launch Docker Desktop from Applications and wait for it to start."
-            else
-                echo "Please install Docker Desktop from https://www.docker.com/products/docker-desktop"
-            fi
-            return
-            ;;
-    esac
-
-    # Linux installation
     if ! command -v curl &>/dev/null; then
         sudo apt-get update -qq 2>/dev/null
         sudo apt-get install -y curl 2>/dev/null
@@ -356,16 +226,6 @@ install_python_sdk() {
     fi
 
     cd "$python_dir"
-
-    # Relax Python version constraint (v1.1.0+ requires >=3.12.11 but works on >=3.12)
-    # Cross-platform: macOS BSD sed requires -i '' while GNU sed uses -i
-    grep -rl --include='*.toml' --include='*.cfg' '>=3.12.11' . 2>/dev/null | while read -r f; do
-        if sed --version 2>/dev/null | grep -q GNU; then
-            sed -i 's/>=3.12.11/>=3.12/g' "$f"
-        else
-            sed -i '' 's/>=3.12.11/>=3.12/g' "$f"
-        fi
-    done 2>/dev/null || true
 
     $PIP install -r requirements.txt 2>/dev/null || true
     $PIP install . --no-deps --force-reinstall

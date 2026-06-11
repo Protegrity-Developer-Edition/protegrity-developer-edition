@@ -1,6 +1,6 @@
 """TechnicalApp – Admin/Technical portal for orchestration, LLM, and Protegrity configuration."""
 from __future__ import annotations
-import os, json, logging, re, time, hashlib
+import os, json, logging, time, hashlib
 from pathlib import Path
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from services.banking_service import get_banking_service
@@ -28,7 +28,7 @@ _config = {
 DEFAULT_MODELS = {
     "openai": "gpt-4o-mini",
     "anthropic": "claude-sonnet-4-20250514",
-    "groq": "llama-3.3-70b-versatile",
+    "groq": "llama-3.1-70b-versatile",
 }
 
 service = get_banking_service()
@@ -78,7 +78,7 @@ ORCHESTRATOR_INFO = {
         "title": "LangGraph — Composable DAG Pipeline",
         "points": [
             "StateGraph with modular nodes — retrieval steps are composable, reorderable graph nodes.",
-            "Combines all three technologies (PostgreSQL + ChromaDB + Kuzu) into a single pipeline.",
+            "Combines all three data sources (KB + RAG + KG) into a single pipeline.",
             "Protegrity tokens flow through every node — the graph never materializes raw PII.",
             "Shows how DAG orchestration scales with Protegrity: add nodes without weakening protection.",
             "Best for complex multi-source workflows where each step handles pre-protected data.",
@@ -142,39 +142,21 @@ def _save_history(session_key: str):
         chat_histories[session_key].save_to_file(_history_filepath(session_key))
 
 
-# ── Gate 2 role policies ─────────────────────────────────────────────
-# None        = full unprotect — real PII visible (superuser, Finance)
-# "tokenized" = strip PII tags, expose token values as-is (Marketing)
-# "redact"    = replace every PII tag with [REDACTED] (Support)
-_ROLE_GATE2_POLICIES: dict[str, str | None] = {
-    "superuser": None,          # full unprotect
-    "Finance":   None,          # full unprotect — same as superuser
-    "Marketing": "tokenized",   # strip tags, show opaque token strings
-    "Support":   "redact",      # replace all PII with [REDACTED]
-}
-
-
 def _user_unprotect(text: str, protegrity_user: str) -> str:
-    policy = _ROLE_GATE2_POLICIES.get(protegrity_user)
-
-    if policy is None:
-        # superuser / Finance — restore all tokens to real PII
-        log.debug("Gate 2 user='%s' policy=unprotect", protegrity_user)
-        return guard.gate2_output(text, restore=True).transformed_text
-
-    if policy == "tokenized":
-        # Marketing — strip the [TAG]...[/TAG] wrapper, leave the opaque token value visible
-        log.debug("Gate 2 user='%s' policy=tokenized", protegrity_user)
-        return re.sub(r'\[([A-Z_]+)\](.*?)\[/\1\]', r'\2', text, flags=re.DOTALL)
-
-    if policy == "redact":
-        # Support — replace every PII tag with [REDACTED]
-        log.debug("Gate 2 user='%s' policy=redact", protegrity_user)
-        return guard.gate2_output(text, restore=False).transformed_text
-
-    # Unknown policy — safe default: redact
-    log.warning("Gate 2 unknown policy for user='%s'; defaulting to redact", protegrity_user)
-    return guard.gate2_output(text, restore=False).transformed_text
+    if protegrity_user == "superuser":
+        gate2_result = guard.gate2_output(text, restore=True)
+        return gate2_result.transformed_text
+    try:
+        import sys
+        cs_app_dir = str(Path(__file__).resolve().parent.parent / "InternalCustomerServiceApp")
+        if cs_app_dir not in sys.path:
+            sys.path.insert(0, cs_app_dir)
+        from protegrity_user_gate import user_unprotect
+        return user_unprotect(text, protegrity_user)
+    except Exception as e:
+        log.warning("Per-user unprotect failed for '%s': %s. Falling back.", protegrity_user, e)
+        gate2_result = guard.gate2_output(text, restore=True)
+        return gate2_result.transformed_text
 
 
 
@@ -252,11 +234,11 @@ def get_llm_response(user_message: str, customer_id: str) -> dict:
         kb_file = KB_DIR / f"{customer_id}.txt"
         if kb_file.exists():
             protected_context = kb_file.read_text().strip()
-            trace.append({"step": "Postgres DB Retrieval", "duration_ms": round((time.time() - t_kb) * 1000), "query": f"SELECT * FROM customers WHERE customer_id = '{customer_id}'", "chars": len(protected_context)})
+            trace.append({"step": "KB File Retrieval", "duration_ms": round((time.time() - t_kb) * 1000), "file": kb_file.name, "chars": len(protected_context)})
         else:
-            trace.append({"step": "Postgres DB Retrieval", "duration_ms": round((time.time() - t_kb) * 1000), "error": f"No record found for customer_id = '{customer_id}'"})  
+            trace.append({"step": "KB File Retrieval", "duration_ms": round((time.time() - t_kb) * 1000), "error": f"Not found: {customer_id}.txt"})
     else:
-        trace.append({"step": "Postgres DB (Disabled)", "duration_ms": 0})
+        trace.append({"step": "KB File (Disabled)", "duration_ms": 0})
 
     # RAG
     rag_context = ""
@@ -267,10 +249,10 @@ def get_llm_response(user_message: str, customer_id: str) -> dict:
             rag_results = retrieve(protected_message, top_k=3, customer_id=customer_id)
             rag_chunks = [f"[RAG hit: {r['metadata'].get('customer_id','?')}, dist={r.get('distance',0):.3f}]\n{r['text'][:500]}" for r in rag_results]
             rag_context = "\n\n".join(rag_chunks)
-            trace.append({"step": "ChromaDB", "duration_ms": round((time.time() - t_rag) * 1000), "results": len(rag_results), "context_chars": len(rag_context)})
+            trace.append({"step": "RAG (ChromaDB)", "duration_ms": round((time.time() - t_rag) * 1000), "results": len(rag_results), "context_chars": len(rag_context)})
         except Exception as e:
             log.warning("RAG failed: %s", e)
-            trace.append({"step": "ChromaDB", "duration_ms": round((time.time() - t_rag) * 1000), "error": str(e)})
+            trace.append({"step": "RAG (ChromaDB)", "duration_ms": round((time.time() - t_rag) * 1000), "error": str(e)})
     else:
         trace.append({"step": "RAG (Disabled)", "duration_ms": 0})
 
@@ -335,8 +317,8 @@ def get_llm_response(user_message: str, customer_id: str) -> dict:
     trace.append({
         "step": f"Orchestrator ({_config['orchestrator']})", "duration_ms": round((time.time() - t_orch) * 1000),
         "orchestrator": _config["orchestrator"], "provider": _config["llm_provider"], "model": _get_model(),
-        "context_sources": [s for s in ["Postgres" if protected_context else None, "RAG" if rag_context else None, "Knowledge Graph" if kg_context else None] if s],
-        "sub_trace": orch_result.get("trace", []), "response_preview": raw_response[:1000],
+        "context_sources": [s for s in ["KB" if protected_context else None, "RAG" if rag_context else None, "KG" if kg_context else None] if s],
+        "sub_trace": orch_result.get("trace", []), "response_preview": raw_response[:300],
     })
     history.add_assistant_message(raw_response)
     _save_history(f"{session.get('username', 'anon')}_{customer_id}")
@@ -347,7 +329,7 @@ def get_llm_response(user_message: str, customer_id: str) -> dict:
     final_response = _user_unprotect(raw_response, protegrity_user)
     trace.append({
         "step": f"Gate 2 (Unprotect as '{protegrity_user}')", "duration_ms": round((time.time() - t_gate2) * 1000),
-        "protegrity_user": protegrity_user, "final_preview": final_response[:1000],
+        "protegrity_user": protegrity_user, "raw_preview": raw_response[:200], "final_preview": final_response[:200],
     })
 
     return {"response": final_response, "trace": trace, "config": _get_safe_config(), "total_ms": round((time.time() - t0) * 1000)}
@@ -364,35 +346,7 @@ def _get_safe_config() -> dict:
     }
 
 
-# ─── Auth helpers ────────────────────────────────────────────────────
-
-
-def _login_required(fn):
-    """Decorator that enforces authentication.
-
-    HTML routes (non-API) are redirected to the login page.
-    API routes (/tech/api/*) return a 401 JSON error.
-    Matches the same pattern used in BusinessCustomerApp.
-    """
-    from functools import wraps
-
-    @wraps(fn)
-    def wrapper(*args, **kwargs):
-        if "username" not in session:
-            if request.path.startswith("/tech/api/"):
-                return jsonify({"error": "Not authenticated"}), 401
-            return redirect(url_for("login"))
-        return fn(*args, **kwargs)
-
-    return wrapper
-
-
 # ─── Routes ───────────────────────────────────────────────────────────
-
-@app.route("/")
-def root():
-    return redirect(url_for("index"))
-
 
 @app.route("/tech/")
 def index():
@@ -429,8 +383,9 @@ def logout():
 
 
 @app.route("/tech/dashboard")
-@_login_required
 def dashboard():
+    if "username" not in session:
+        return redirect(url_for("login"))
     customers = service.get_all_customers()
     customer_ids = [c.get("customer_id", c.get("account_id", "unknown")) for c in customers]
     locked_orch = session.get("locked_orchestrator")
@@ -443,20 +398,23 @@ def dashboard():
 
 
 @app.route("/tech/chat/<customer_id>")
-@_login_required
 def chat(customer_id):
+    if "username" not in session:
+        return redirect(url_for("login"))
     return render_template("chat.html", username=session["username"], customer_id=customer_id, config=_get_safe_config())
 
 
 @app.route("/tech/api/config", methods=["GET"])
-@_login_required
 def api_get_config():
+    if "username" not in session:
+        return jsonify({"error": "Not authenticated"}), 401
     return jsonify(_get_safe_config())
 
 
 @app.route("/tech/api/config", methods=["POST"])
-@_login_required
 def api_update_config():
+    if "username" not in session:
+        return jsonify({"error": "Not authenticated"}), 401
     data = request.get_json()
     updated = []
     locked_orch = session.get("locked_orchestrator")
@@ -509,8 +467,9 @@ def api_update_config():
 
 
 @app.route("/tech/api/chat", methods=["POST"])
-@_login_required
 def api_chat():
+    if "username" not in session:
+        return jsonify({"error": "Not authenticated"}), 401
     data = request.get_json()
     user_message = data.get("message", "").strip()
     customer_id = data.get("customer_id", "").strip()
@@ -522,8 +481,9 @@ def api_chat():
 
 
 @app.route("/tech/api/chat/clear", methods=["POST"])
-@_login_required
 def api_chat_clear():
+    if "username" not in session:
+        return jsonify({"error": "Not authenticated"}), 401
     data = request.get_json() or {}
     customer_id = data.get("customer_id", "")
     session_key = f"{session['username']}_{customer_id}"

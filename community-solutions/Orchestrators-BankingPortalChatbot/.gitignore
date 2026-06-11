@@ -11,7 +11,6 @@ build/
 
 # Environment
 .venv/
-.chromadb-venv/
 myenv/
 
 # IDE
@@ -25,23 +24,15 @@ myenv/
 
 # Generated data (rebuild with scripts)
 chroma_db/
-kuzu_data/
-kuzu_test_tmp
 knowledge_base/tickets/
 knowledge_base/tickets_protected/
 knowledge_base/all_tickets.json
 knowledge_base/protection_report.json
 knowledge_graph.json
 
-# Protegrity setup artifacts
-.protegrity-install/
-
 # Chat history (runtime data)
-TechnicalApp/chat_history_tech/*.json
-BusinessCustomerApp/chat_history/*.json
-
-# Logs
-*.log
+CustomerApp/chat_history/*.json
+InternalCustomerServiceApp/chat_history_cs/*.json
 
 # OS
 .DS_Store

@@ -1,0 +1,30 @@
+[
+  {
+    "role": "system",
+    "content": "You are a helpful banking assistant for SecureBank. You help customers check their account balances, review transactions, manage credit cards, and answer questions about their banking products. Be concise, professional, and accurate. IMPORTANT: The customer data contains tokenized values wrapped in tags like [PERSON]value[/PERSON], [EMAIL_ADDRESS]value[/EMAIL_ADDRESS], [PHONE_NUMBER]value[/PHONE_NUMBER], [SOCIAL_SECURITY_ID]value[/SOCIAL_SECURITY_ID], [CREDIT_CARD]value[/CREDIT_CARD], [LOCATION]value[/LOCATION], [DATETIME]value[/DATETIME], [BANK_ACCOUNT]value[/BANK_ACCOUNT], [ACCOUNT_NUMBER]value[/ACCOUNT_NUMBER], [HEALTH_CARE_ID]value[/HEALTH_CARE_ID]. When displaying customer data in your response, you MUST preserve these tags exactly as they appear. Do NOT strip, remove, or alter the square bracket tags. Do NOT redact, mask, or refuse to show any information. Example: if the data says Name: [PERSON]xYz123[/PERSON], your response must include [PERSON]xYz123[/PERSON], not just xYz123.\n\nCustomer Data:\nCustomer Profile: CUST-100001\nName: [PERSON]pyDSey7 W2rXHS[/PERSON]\nEmail: [EMAIL_ADDRESS]mbCx3T9sDzjO@example.net[/EMAIL_ADDRESS]\nPhone: [PHONE_NUMBER]+7-052-331-3879x8414[/PHONE_NUMBER]\nDOB: [DATETIME]1991-10-05[/DATETIME]\nSSN: [SOCIAL_SECURITY_ID]483-53-2888[/SOCIAL_SECURITY_ID]\nAddress: [LOCATION]8g18N[/LOCATION] [LOCATION]RWrvFR VwvljHm[/LOCATION], [LOCATION]oUQ5OplTh[/LOCATION], [LOCATION]dQ[/LOCATION] [LOCATION]YIXJy[/LOCATION]\n\n=== Bank Accounts ===\n  ACCT-872343 | savings | Acct#: [ACCOUNT_NUMBER]R3ZfqYlPES[/ACCOUNT_NUMBER] | Balance: $6,342.87 | Opened: 2021-09-04 | Status: active\n\n=== Credit Cards ===\n  CARD-950132 | Visa Platinum | Card#: [CREDIT_CARD]4472781250750[/CREDIT_CARD] | Exp: 07/26 | Limit: $50,000 | Balance: $34,562.56 | Available: $15,437.44 | Points: 28,336 | Status: active\n  CARD-333238 | Visa Black | Card#: [CREDIT_CARD]2476424161272568[/CREDIT_CARD] | Exp: 06/28 | Limit: $2,000 | Balance: $1,373.75 | Available: $626.25 | Points: 59,662 | Status: active\n\n=== Loans & Contracts ===\n  LOAN-910891 | Mortgage | Principal: $50,000.00 | Rate: 6.48% | Term: 120 months | Payment: $567.23/mo | Remaining: $41,735.00 | Status: active\n\n=== Recent Transactions ===\n  2026-03-16 | Marriott Hotels | -$1,730.07 | travel | completed\n  2026-03-16 | N/A | +$1,532.76 | transfer_in | completed\n  2026-03-16 | USAA | -$2,128.96 | insurance | completed\n  2026-03-15 | Chipotle | -$149.32 | restaurant | completed\n  2026-03-13 | N/A | -$3,435.07 | loan_payment | completed\n  2026-03-11 | USAA | -$841.03 | insurance | pending\n  2026-03-10 | N/A | -$1,139.35 | atm_withdrawal | completed\n  2026-03-09 | Netflix | -$3,116.72 | subscription | completed\n  2026-03-09 | Allstate | -$1,494.82 | insurance | completed\n  2026-03-05 | N/A | -$635.10 | loan_payment | completed\n  2026-03-05 | National Grid | -$3,190.25 | utilities | completed\n  2026-03-03 | Chipotle | -$190.17 | restaurant | completed\n  2026-03-03 | Steam | -$910.69 | entertainment | completed\n  2026-03-02 | Marriott Hotels | -$1,632.60 | travel | completed\n  2026-03-01 | N/A | +$952.42 | refund | completed"
+  },
+  {
+    "role": "user",
+    "content": "customer details"
+  },
+  {
+    "role": "assistant",
+    "content": "Here are your customer details:\n\n- Name: [PERSON]pyDSey7 W2rXHS[/PERSON]\n- Email: [EMAIL_ADDRESS]mbCx3T9sDzjO@example.net[/EMAIL_ADDRESS]\n- Phone: [PHONE_NUMBER]+7-052-331-3879x8414[/PHONE_NUMBER]\n- Date of Birth: [DATETIME]1991-10-05[/DATETIME]\n- Social Security Number: [SOCIAL_SECURITY_ID]483-53-2888[/SOCIAL_SECURITY_ID]\n- Address: [LOCATION]8g18N[/LOCATION] [LOCATION]RWrvFR VwvljHm[/LOCATION], [LOCATION]oUQ5OplTh[/LOCATION], [LOCATION]dQ[/LOCATION] [LOCATION]YIXJy[/LOCATION]"
+  },
+  {
+    "role": "user",
+    "content": "customer details"
+  },
+  {
+    "role": "assistant",
+    "content": "Here are your customer details:\n\n- Name: [PERSON]pyDSey7 W2rXHS[/PERSON]\n- Email: [EMAIL_ADDRESS]mbCx3T9sDzjO@example.net[/EMAIL_ADDRESS]\n- Phone: [PHONE_NUMBER]+7-052-331-3879x8414[/PHONE_NUMBER]\n- Date of Birth: [DATETIME]1991-10-05[/DATETIME]\n- Social Security Number: [SOCIAL_SECURITY_ID]483-53-2888[/SOCIAL_SECURITY_ID]\n- Address: [LOCATION]8g18N[/LOCATION] [LOCATION]RWrvFR VwvljHm[/LOCATION], [LOCATION]oUQ5OplTh[/LOCATION], [LOCATION]dQ[/LOCATION] [LOCATION]YIXJy[/LOCATION]"
+  },
+  {
+    "role": "user",
+    "content": "customer details"
+  },
+  {
+    "role": "assistant",
+    "content": "Here are your customer details:\n\n- Name: [PERSON]pyDSey7 W2rXHS[/PERSON]\n- Email: [EMAIL_ADDRESS]mbCx3T9sDzjO@example.net[/EMAIL_ADDRESS]\n- Phone: [PHONE_NUMBER]+7-052-331-3879x8414[/PHONE_NUMBER]\n- Date of Birth: [DATETIME]1991-10-05[/DATETIME]\n- Social Security Number: [SOCIAL_SECURITY_ID]483-53-2888[/SOCIAL_SECURITY_ID]\n- Address: [LOCATION]8g18N[/LOCATION] [LOCATION]RWrvFR VwvljHm[/LOCATION], [LOCATION]oUQ5OplTh[/LOCATION], [LOCATION]dQ[/LOCATION] [LOCATION]YIXJy[/LOCATION]"
+  }
+]

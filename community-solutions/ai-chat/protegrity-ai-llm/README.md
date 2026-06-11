@@ -76,7 +76,7 @@ Diagram and implementation docs:
 ### Prereqs
 
 - Docker + Docker Compose
-- Python 3.12+
+- Python 3.10+
 - Node.js 20+ (for local frontend workflow)
 
 ### Setup (env vars)

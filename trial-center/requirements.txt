@@ -1,0 +1,23 @@
+# Protegrity AI Developer Edition Trial Center - Python Dependencies
+# Python 3.11+ required (aligned with Protegrity AI Developer Edition)
+
+# CRITICAL: Protegrity AI Developer Edition SDK v1.2.0
+# This package is REQUIRED for all discovery, protection, and redaction operations
+# Available on PyPI: https://pypi.org/project/protegrity-ai-developer-python/
+protegrity-ai-developer-python>=1.2.0
+
+# Web Framework (>=1.37 for CVE-2024-42474 static-file path traversal fix)
+streamlit>=1.37,<2
+
+# HTTP Client (>=2.32.0 for CVE-2024-35195 cert verification fix)
+requests>=2.32.0,<3
+
+# Data Handling
+pandas>=2.1.0,<3
+
+# Configuration Management
+python-dotenv>=1.0.0,<2
+pyyaml>=6.0.1,<7
+
+# JSON Processing (standard library, but listing for clarity)
+# json - included in Python standard library

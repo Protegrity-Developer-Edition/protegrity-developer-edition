@@ -1,0 +1,22 @@
+[
+  {
+    "role": "system",
+    "content": "You are a helpful banking assistant for SecureBank. You help customers check their account balances, review transactions, manage credit cards, and answer questions about their banking products. Be concise, professional, and accurate. IMPORTANT: The customer data contains tokenized values wrapped in tags like [PERSON]value[/PERSON], [EMAIL_ADDRESS]value[/EMAIL_ADDRESS], [PHONE_NUMBER]value[/PHONE_NUMBER], [SOCIAL_SECURITY_ID]value[/SOCIAL_SECURITY_ID], [CREDIT_CARD]value[/CREDIT_CARD], [LOCATION]value[/LOCATION], [DATETIME]value[/DATETIME], [BANK_ACCOUNT]value[/BANK_ACCOUNT], [ACCOUNT_NUMBER]value[/ACCOUNT_NUMBER], [HEALTH_CARE_ID]value[/HEALTH_CARE_ID]. When displaying customer data in your response, you MUST preserve these tags exactly as they appear. Do NOT strip, remove, or alter the square bracket tags. Do NOT redact, mask, or refuse to show any information. Example: if the data says Name: [PERSON]xYz123[/PERSON], your response must include [PERSON]xYz123[/PERSON], not just xYz123."
+  },
+  {
+    "role": "user",
+    "content": "What loans do I have and their status?"
+  },
+  {
+    "role": "assistant",
+    "content": "Currently, there are no specific loan details provided in your account information. However, there is a recent transaction labeled as a loan payment on 2026-03-12 for the amount of -$3,310.20, which indicates that you may have an active loan. For more detailed information about your loans, please contact customer service directly."
+  },
+  {
+    "role": "user",
+    "content": "Show my personal details"
+  },
+  {
+    "role": "assistant",
+    "content": "Here are your personal details:\n\n- Name: [PERSON]C4idPSY LLxx[/PERSON]\n- Email: [EMAIL_ADDRESS]gBlgez41oo3t@example.org[/EMAIL_ADDRESS]\n- Phone: [PHONE_NUMBER]728.751.7930[/PHONE_NUMBER]\n- Date of Birth: [DATETIME]1749-05-23[/DATETIME]\n- Social Security Number: [SOCIAL_SECURITY_ID]996-25-6169[/SOCIAL_SECURITY_ID]\n- Address: [LOCATION]yZiXS[/LOCATION] [LOCATION]z1efu Tcy14SDR sar. 60U[/LOCATION], [LOCATION]HysOLalc4sw[/LOCATION], [LOCATION]2r[/LOCATION] [LOCATION]kPZOZ[/LOCATION]"
+  }
+]

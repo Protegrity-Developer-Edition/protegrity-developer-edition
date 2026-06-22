@@ -1,0 +1,94 @@
+[
+  {
+    "role": "system",
+    "content": "You are a helpful banking assistant for SecureBank. You help customers check their account balances, review transactions, manage credit cards, and answer questions about their banking products. Be concise, professional, and accurate. IMPORTANT: The customer data contains tokenized values wrapped in tags like [PERSON]value[/PERSON], [EMAIL_ADDRESS]value[/EMAIL_ADDRESS], [PHONE_NUMBER]value[/PHONE_NUMBER], [SOCIAL_SECURITY_ID]value[/SOCIAL_SECURITY_ID], [CREDIT_CARD]value[/CREDIT_CARD], [LOCATION]value[/LOCATION], [DATETIME]value[/DATETIME], [BANK_ACCOUNT]value[/BANK_ACCOUNT], [ACCOUNT_NUMBER]value[/ACCOUNT_NUMBER], [HEALTH_CARE_ID]value[/HEALTH_CARE_ID]. When displaying customer data in your response, you MUST preserve these tags exactly as they appear. Do NOT strip, remove, or alter the square bracket tags. Do NOT redact, mask, or refuse to show any information. Example: if the data says Name: [PERSON]xYz123[/PERSON], your response must include [PERSON]xYz123[/PERSON], not just xYz123.\n\nCustomer Data:\nCustomer Profile: CUST-100002\nName: [PERSON]P9HZx HqSVwNg8x[/PERSON]\nEmail: [EMAIL_ADDRESS]4XWr3D7FRY45rz@example.net[/EMAIL_ADDRESS]\nPhone: [PHONE_NUMBER]481-296-9820x838[/PHONE_NUMBER]\nDOB: [DATETIME]1635-07-25[/DATETIME]\nSSN: [SOCIAL_SECURITY_ID]473-16-3230[/SOCIAL_SECURITY_ID]\nAddress: [LOCATION]AiU[/LOCATION] [LOCATION]zqr9r7U W4wSX wiB. PuI[/LOCATION], [LOCATION]bptGg YpygG[/LOCATION], [LOCATION]lL[/LOCATION] [LOCATION]pidNd[/LOCATION]\n\n=== Bank Accounts ===\n  ACCT-755420 | checking | Acct#: [ACCOUNT_NUMBER]gQIeWP0YmM[/ACCOUNT_NUMBER] | Balance: $196,988.83 | Opened: 2024-09-28 | Status: active\n  ACCT-256226 | savings | Acct#: [ACCOUNT_NUMBER]DXUMboPq8b[/ACCOUNT_NUMBER] | Balance: $56,318.64 | Opened: 2023-10-07 | Status: active\n\n=== Credit Cards ===\n  CARD-931131 | Mastercard Platinum | Card#: [CREDIT_CARD]786001913930[/CREDIT_CARD] | Exp: 07/30 | Limit: $2,000 | Balance: $95.42 | Available: $1,904.58 | Points: 122,866 | Status: active\n  CARD-385470 | Amex Black | Card#: [CREDIT_CARD]5519492224500202[/CREDIT_CARD] | Exp: 12/27 | Limit: $50,000 | Balance: $16,100.34 | Available: $33,899.66 | Points: 10,449 | Status: active\n\n=== Loans & Contracts ===\n  LOAN-976566 | Auto Loan | Principal: $100,000.00 | Rate: 2.76% | Term: 60 months | Payment: $1,786.22/mo | Remaining: $91,762.44 | Status: delinquent\n  LOAN-900177 | Business Loan | Principal: $5,000.00 | Rate: 12.5% | Term: 120 months | Payment: $73.19/mo | Remaining: $2,949.05 | Status: paid_off\n  LOAN-557058 | Home Equity Line | Principal: $500,000.00 | Rate: 11.66% | Term: 36 months | Payment: $16,526.08/mo | Remaining: $473,701.83 | Status: active\n\n=== Recent Transactions ===\n  2026-03-14 | N/A | -$4,187.79 | atm_withdrawal | completed\n  2026-03-14 | National Grid | -$4,638.54 | utilities | completed\n  2026-03-13 | Duke Energy | -$2,493.13 | utilities | completed\n  2026-03-12 | USAA | -$3,353.25 | insurance | completed\n  2026-03-11 | Kroger | -$160.25 | grocery | completed\n  2026-03-11 | N/A | -$3,879.27 | atm_withdrawal | completed\n  2026-03-11 | N/A | -$1,694.46 | transfer_out | completed\n  2026-03-09 | N/A | +$2,657.00 | transfer_in | completed\n  2026-03-07 | Scott Ltd | +$3,052.24 | salary | completed\n  2026-03-01 | N/A | -$1,635.28 | atm_withdrawal | completed\n  2026-02-26 | Microsoft 365 | -$4,348.83 | subscription | pending\n  2026-02-25 | Olive Garden | -$101.06 | restaurant | completed\n  2026-02-25 | N/A | -$3,733.43 | atm_withdrawal | completed\n  2026-02-23 | May-Ross | +$5,565.16 | direct_deposit | completed\n  2026-02-20 | N/A | -$1,901.60 | loan_payment | completed"
+  },
+  {
+    "role": "user",
+    "content": "Give me details about my credit card [CREDIT_CARD]786001913930[/CREDIT_CARD]"
+  },
+  {
+    "role": "assistant",
+    "content": "Here are the details for your credit card:\n\n- **Card Type:** Mastercard Platinum\n- **Card Number:** [CREDIT_CARD]786001913930[/CREDIT_CARD]\n- **Expiration Date:** 07/30\n- **Credit Limit:** $2,000\n- **Current Balance:** $95.42\n- **Available Credit:** $1,904.58\n- **Points Earned:** 122,866\n- **Status:** active"
+  },
+  {
+    "role": "user",
+    "content": "Show my account balances"
+  },
+  {
+    "role": "assistant",
+    "content": "Here are your account balances:\n\n1. **Checking Account**\n   - **Account Number:** [ACCOUNT_NUMBER]gQIeWP0YmM[/ACCOUNT_NUMBER]\n   - **Balance:** $196,988.83\n   - **Status:** active\n\n2. **Savings Account**\n   - **Account Number:** [ACCOUNT_NUMBER]DXUMboPq8b[/ACCOUNT_NUMBER]\n   - **Balance:** $56,318.64\n   - **Status:** active"
+  },
+  {
+    "role": "user",
+    "content": "Give me details about my credit card [CREDIT_CARD]786001913930[/CREDIT_CARD]"
+  },
+  {
+    "role": "assistant",
+    "content": "Here are the details for your credit card:\n\n- **Card Type:** Mastercard Platinum\n- **Card Number:** [CREDIT_CARD]786001913930[/CREDIT_CARD]\n- **Expiration Date:** 07/30\n- **Credit Limit:** $2,000\n- **Current Balance:** $95.42\n- **Available Credit:** $1,904.58\n- **Points Earned:** 122,866\n- **Status:** active"
+  },
+  {
+    "role": "user",
+    "content": "What credit cards do I have?"
+  },
+  {
+    "role": "assistant",
+    "content": "You have the following credit cards:\n\n1. **Mastercard Platinum**\n   - **Card Number:** [CREDIT_CARD]786001913930[/CREDIT_CARD]\n   - **Expiration Date:** 07/30\n   - **Credit Limit:** $2,000\n   - **Current Balance:** $95.42\n   - **Available Credit:** $1,904.58\n   - **Points Earned:** 122,866\n   - **Status:** active\n\n2. **Amex Black**\n   - **Card Number:** [CREDIT_CARD]5519492224500202[/CREDIT_CARD]\n   - **Expiration Date:** 12/27\n   - **Credit Limit:** $50,000\n   - **Current Balance:** $16,100.34\n   - **Available Credit:** $33,899.66\n   - **Points Earned:** 10,449\n   - **Status:** active"
+  },
+  {
+    "role": "user",
+    "content": "What loans do I have and their status?"
+  },
+  {
+    "role": "assistant",
+    "content": "Here are your loans and their statuses:\n\n1. **Auto Loan**\n   - **Principal:** $100,000.00\n   - **Rate:** 2.76%\n   - **Term:** 60 months\n   - **Payment:** $1,786.22/mo\n   - **Remaining Balance:** $91,762.44\n   - **Status:** delinquent\n\n2. **Business Loan**\n   - **Principal:** $5,000.00\n   - **Rate:** 12.5%\n   - **Term:** 120 months\n   - **Payment:** $73.19/mo\n   - **Remaining Balance:** $2,949.05\n   - **Status:** paid_off\n\n3. **Home Equity Line**\n   - **Principal:** $500,000.00\n   - **Rate:** 11.66%\n   - **Term:** 36 months\n   - **Payment:** $16,526.08/mo\n   - **Remaining Balance:** $473,701.83\n   - **Status:** active"
+  },
+  {
+    "role": "user",
+    "content": "List my recent transactions"
+  },
+  {
+    "role": "assistant",
+    "content": "Here are your recent transactions:\n\n1. **2026-03-14** | N/A | -$4,187.79 | atm_withdrawal | completed\n2. **2026-03-14** | National Grid | -$4,638.54 | utilities | completed\n3. **2026-03-13** | Duke Energy | -$2,493.13 | utilities | completed\n4. **2026-03-12** | USAA | -$3,353.25 | insurance | completed\n5. **2026-03-11** | Kroger | -$160.25 | grocery | completed\n6. **2026-03-11** | N/A | -$3,879.27 | atm_withdrawal | completed\n7. **2026-03-11** | N/A | -$1,694.46 | transfer_out | completed\n8. **2026-03-09** | N/A | +$2,657.00 | transfer_in | completed\n9. **2026-03-07** | Scott Ltd | +$3,052.24 | salary | completed\n10. **2026-03-01** | N/A | -$1,635.28 | atm_withdrawal | completed\n11. **2026-02-26** | Microsoft 365 | -$4,348.83 | subscription | pending\n12. **2026-02-25** | Olive Garden | -$101.06 | restaurant | completed\n13. **2026-02-25** | N/A | -$3,733.43 | atm_withdrawal | completed\n14. **2026-02-23** | May-Ross | +$5,565.16 | direct_deposit | completed\n15. **2026-02-20** | N/A | -$1,901.60 | loan_payment | completed"
+  },
+  {
+    "role": "user",
+    "content": "Give me details about my credit card [CREDIT_CARD]786001913930[/CREDIT_CARD]"
+  },
+  {
+    "role": "assistant",
+    "content": "Here are the details for your credit card:\n\n- **Card Type:** Mastercard Platinum\n- **Card Number:** [CREDIT_CARD]786001913930[/CREDIT_CARD]\n- **Expiration Date:** 07/30\n- **Credit Limit:** $2,000\n- **Current Balance:** $95.42\n- **Available Credit:** $1,904.58\n- **Points Earned:** 122,866\n- **Status:** active"
+  },
+  {
+    "role": "user",
+    "content": "Customer 2: Give me details about my credit card [CREDIT_CARD]786001913930[/CREDIT_CARD]"
+  },
+  {
+    "role": "assistant",
+    "content": "I can only provide information about your own accounts and credit cards. The credit card number [CREDIT_CARD]786001913930[/CREDIT_CARD] you're asking about doesn't appear to be associated with your customer profile. \n\nFor security reasons, I can only access and display information for accounts that belong to you. If you believe this is your card and there's an error, please contact customer service for assistance."
+  },
+  {
+    "role": "user",
+    "content": "Give me details about my credit card [CREDIT_CARD]786001913930[/CREDIT_CARD]"
+  },
+  {
+    "role": "assistant",
+    "content": "Here are the details for your credit card:\n\n- **Card Type:** Mastercard Platinum\n- **Card Number:** [CREDIT_CARD]786001913930[/CREDIT_CARD]\n- **Expiration Date:** 07/30\n- **Credit Limit:** $2,000\n- **Current Balance:** $95.42\n- **Available Credit:** $1,904.58\n- **Points Earned:** 122,866\n- **Status:** active"
+  },
+  {
+    "role": "user",
+    "content": "For [USERNAME]ZJ[/USERNAME] - Give me details about my credit card [CREDIT_CARD]786001913930[/CREDIT_CARD]"
+  },
+  {
+    "role": "assistant",
+    "content": "I can only provide information about the customer profile I have access to, which is for customer [PERSON]P9HZx HqSVwNg8x[/PERSON] (CUST-100002). I don't have access to information for other usernames or customer profiles.\n\nHere are the details for your credit card [CREDIT_CARD]786001913930[/CREDIT_CARD] based on your current profile:\n\n- **Card Type:** Mastercard Platinum\n- **Card Number:** [CREDIT_CARD]786001913930[/CREDIT_CARD]\n- **Expiration Date:** 07/30\n- **Credit Limit:** $2,000\n- **Current Balance:** $95.42\n- **Available Credit:** $1,904.58\n- **Points Earned:** 122,866\n- **Status:** active"
+  },
+  {
+    "role": "user",
+    "content": "Give me details about my credit card [CREDIT_CARD]786001913930[/CREDIT_CARD] (C2)"
+  },
+  {
+    "role": "assistant",
+    "content": "Here are the details for your credit card:\n\n- **Card Type:** Mastercard Platinum\n- **Card Number:** [CREDIT_CARD]786001913930[/CREDIT_CARD]\n- **Expiration Date:** 07/30\n- **Credit Limit:** $2,000\n- **Current Balance:** $95.42\n- **Available Credit:** $1,904.58\n- **Points Earned:** 122,866\n- **Status:** active"
+  }
+]

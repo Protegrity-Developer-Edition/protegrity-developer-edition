@@ -1,0 +1,35 @@
+networks:
+  protegrity-network:
+    name: ${DOCKER_NETWORK_NAME:-protegrity-network}
+    external: false
+
+services:
+  pattern-provider-service:
+    image: ${DOCKER_PATTERN_IMAGE:-${REGISTRY:-ghcr.io/protegrity-ai-developer-edition}/pattern-provider:${PATTERN_TAG:-2.0.0.320.59776828}}
+    container_name: pattern_provider
+    networks:
+      - protegrity-network
+    environment:
+      - logging_config=${PATTERN_LOGGING_CONFIG:-}
+
+  context-provider-service:
+    image: ${DOCKER_CONTEXT_IMAGE:-${REGISTRY:-ghcr.io/protegrity-ai-developer-edition}/context-provider:${CONTEXT_TAG:-2.0.0.242.5041932c}}
+    container_name: context_provider
+    networks:
+      - protegrity-network
+    environment:
+      - logging_config=${CONTEXT_LOGGING_CONFIG:-}
+
+  classification-service:
+    image: ${DOCKER_CLASSIFICATION_IMAGE:-${REGISTRY:-ghcr.io/protegrity-ai-developer-edition}/classification-service:${CLASSIFICATION_TAG:-2.0.0.374.8047721c}}
+    container_name: classification_service
+    ports:
+      - "${CLASSIFICATION_PORT:-8580}:8050"
+    depends_on:
+      - pattern-provider-service
+      - context-provider-service
+    networks:
+      - protegrity-network
+    environment:
+      - PROVIDERS=[{"name":"Pattern", "address":"http://pattern-provider-service:8051"}, {"name":"Context", "address":"http://context-provider-service:8052"}]
+      - logging_config=${CLASSIFICATION_LOGGING_CONFIG:-}

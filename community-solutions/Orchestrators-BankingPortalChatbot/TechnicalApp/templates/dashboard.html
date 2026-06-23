@@ -7,26 +7,26 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; }
-        .topbar { background: #1e293b; padding: 0.5rem 1.5rem; display: flex;
+        .topbar { background: #1e293b; padding: 1rem 2rem; display: flex;
                   justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
         .topbar h1 { font-size: 1.2rem; color: #38bdf8; }
         .topbar .user-info { color: #94a3b8; font-size: 0.85rem; }
         .topbar .user-info .role-badge { background: #7c3aed; color: white; padding: 2px 8px;
                  border-radius: 10px; font-size: 0.7rem; margin-left: 0.5rem; }
         .topbar a { color: #f87171; text-decoration: none; margin-left: 1rem; }
-        .container { max-width: 1600px; margin: 1rem auto; padding: 0 1.5rem; }
-        .grid-3 { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1rem; }
-        .card { background: #1e293b; border-radius: 10px; padding: 1rem;
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; }
+        .card { background: #1e293b; border-radius: 10px; padding: 1.5rem;
                 border: 1px solid #334155; }
-        .card h2 { font-size: 1rem; color: #38bdf8; margin-bottom: 0.5rem;
+        .card h2 { font-size: 1rem; color: #38bdf8; margin-bottom: 1rem;
                    border-bottom: 1px solid #334155; padding-bottom: 0.5rem; }
-        label { display: block; color: #94a3b8; font-size: 0.8rem; margin-bottom: 0.15rem; margin-top: 0.4rem; }
+        label { display: block; color: #94a3b8; font-size: 0.8rem; margin-bottom: 0.25rem; margin-top: 0.75rem; }
         select, input[type="number"], input[type="text"] {
             width: 100%; padding: 0.5rem; background: #0f172a; border: 1px solid #334155;
             border-radius: 6px; color: #e2e8f0; font-size: 0.9rem; }
         select:focus, input:focus { outline: none; border-color: #38bdf8; }
         select:disabled { opacity: 0.5; cursor: not-allowed; }
-        .toggle-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.4rem; }
+        .toggle-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.75rem; }
         .toggle { position: relative; width: 44px; height: 24px; }
         .toggle input { opacity: 0; width: 0; height: 0; }
         .toggle .slider { position: absolute; cursor: pointer; inset: 0; background: #475569;
@@ -44,13 +44,13 @@
         .status-bar.show { display: block; }
         .status-bar.success { background: #14532d; color: #86efac; }
         .customer-list { margin-top: 1rem; }
-        .customer-btn { display: inline-block; padding: 0.3rem 0.6rem; margin: 0.2rem;
+        .customer-btn { display: inline-block; padding: 0.4rem 0.8rem; margin: 0.25rem;
                         background: #334155; border: 1px solid #475569; border-radius: 6px;
                         color: #e2e8f0; text-decoration: none; font-size: 0.8rem; font-family: monospace; }
         .customer-btn:hover { background: #475569; border-color: #38bdf8; }
-        .section-title { color: #94a3b8; font-size: 0.85rem; margin-top: 0.75rem; margin-bottom: 0.3rem; }
+        .section-title { color: #94a3b8; font-size: 0.85rem; margin-top: 1.5rem; margin-bottom: 0.5rem; }
         .info-panel { background: #0f172a; border: 1px solid #334155; border-radius: 8px;
-                      padding: 0.8rem; margin-bottom: 0.5rem; }
+                      padding: 1.2rem; margin-bottom: 1rem; }
         .info-panel h3 { color: #a78bfa; font-size: 0.95rem; margin-bottom: 0.75rem; }
         .info-panel ul { list-style: none; padding: 0; }
         .info-panel ul li { position: relative; padding: 0.4rem 0 0.4rem 1.2rem; color: #94a3b8;
@@ -78,25 +78,38 @@
     </div>
 
     <div class="container">
-        <!-- Orchestrator banner -->
-        <div class="card" style="margin-bottom: 1rem; padding: 0.6rem 1rem; display: flex; align-items: center; gap: 1.5rem;">
-            <h2 style="border: none; margin: 0; padding: 0; white-space: nowrap;">📖 <span id="info-title" style="color: #a78bfa;">{{ orch_info.title }}</span></h2>
-            <div id="info-panel" style="display: none;"></div>
-            <ul id="info-points" style="display: none;"></ul>
-            {% if locked_orchestrator %}
-            <span style="color: #64748b; font-size: 0.8rem;">Logged in as <code>{{ username }}</code> · restricted to <strong>{{ locked_orchestrator }}</strong></span>
-            {% endif %}
-        </div>
-
         <div class="grid-3">
-            <!-- LEFT: Configuration -->
+            <!-- LEFT: Orchestrator Info -->
+            <div class="card">
+                <h2>📖 Orchestrator Overview</h2>
+                <div class="info-panel" id="info-panel">
+                    <h3 id="info-title">{{ orch_info.title }}</h3>
+                    <ul id="info-points">
+                        {% for point in orch_info.points %}
+                        <li>{{ point }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% if locked_orchestrator %}
+                <p class="hint">
+                    You are logged in as <code>{{ username }}</code> with access restricted to
+                    <strong>{{ locked_orchestrator }}</strong> orchestrator only.
+                </p>
+                {% else %}
+                <p class="hint">
+                    Change the orchestrator in the config panel to see different integration details.
+                </p>
+                {% endif %}
+            </div>
+
+            <!-- CENTER: Configuration -->
             <div class="card">
                 <h2>⚙️ Pipeline Configuration</h2>
 
                 <label for="orchestrator">Orchestrator
                     {% if locked_orchestrator %}<span class="locked-badge">🔒 locked</span>{% endif %}
                 </label>
-                <select id="orchestrator" onchange="updateInfoPanel(); saveConfig();" {% if locked_orchestrator %}disabled{% endif %}>
+                <select id="orchestrator" onchange="updateInfoPanel()" {% if locked_orchestrator %}disabled{% endif %}>
                     {% for o in orchestrators %}
                     <option value="{{ o }}" {% if o == config.orchestrator %}selected{% endif %}>{{ o }}</option>
                     {% endfor %}
@@ -112,50 +125,75 @@
                 <label for="llm_model">LLM Model (blank = auto)</label>
                 <input type="text" id="llm_model" value="{{ config.llm_model }}" placeholder="e.g. gpt-4o-mini">
 
-                <hr style="border-color: #334155; margin-top: 0.5rem;">
-                <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
-                <div style="flex: 1;">
-                <h2 style="margin-top: 0;">📚 Data Sources <span id="ds-lock-badge" style="font-size: 0.65rem; color: #fbbf24; font-weight: normal;">(auto-set)</span></h2>
+                <hr style="border-color: #334155; margin-top: 1.5rem;">
+
+                <h2 style="margin-top: 1rem;">📚 Data Sources <span id="ds-lock-badge" style="font-size: 0.65rem; color: #fbbf24; font-weight: normal;">(auto-set by orchestrator)</span></h2>
+
                 <div class="toggle-row" id="ds-kb-row">
-                    <label class="toggle"><input type="checkbox" id="kb_enabled" {% if config.kb_enabled %}checked{% endif %}><span class="slider"></span></label>
-                    <span style="color: #e2e8f0; font-size: 0.85rem;" id="ds-kb-label">PostgreSQL</span>
-                </div>
-                <div class="toggle-row" id="ds-rag-row">
-                    <label class="toggle"><input type="checkbox" id="rag_enabled" {% if config.rag_enabled %}checked{% endif %}><span class="slider"></span></label>
-                    <span style="color: #e2e8f0; font-size: 0.85rem;" id="ds-rag-label">ChromaDB</span>
-                </div>
-                <div class="toggle-row" id="ds-kg-row">
-                    <label class="toggle"><input type="checkbox" id="kg_enabled" {% if config.kg_enabled %}checked{% endif %}><span class="slider"></span></label>
-                    <span style="color: #e2e8f0; font-size: 0.85rem;" id="ds-kg-label">KùzuDB</span>
-                </div>
-                </div>
-                <div style="flex: 1.5;">
-                <h2 style="margin-top: 0;">🛡️ Protegrity Settings</h2>
-                <div style="display: flex; gap: 0.75rem;">
-                <div style="flex: 1;">
-                    <div class="toggle-row"><label class="toggle"><input type="checkbox" id="guardrail_enabled" {% if config.guardrail_enabled %}checked{% endif %}><span class="slider"></span></label><span style="color: #e2e8f0; font-size: 0.85rem;">Guardrail</span></div>
-                    <label for="risk_threshold">Threshold</label>
-                    <input type="number" id="risk_threshold" value="{{ config.risk_threshold }}" min="0" max="1" step="0.05">
-                    <div class="toggle-row"><label class="toggle"><input type="checkbox" id="discovery_enabled" {% if config.discovery_enabled %}checked{% endif %}><span class="slider"></span></label><span style="color: #e2e8f0; font-size: 0.85rem;">Discovery</span></div>
-                    <label for="classify_threshold">Confidence</label>
-                    <input type="number" id="classify_threshold" value="{{ config.classify_threshold }}" min="0" max="1" step="0.05">
-                </div>
-                <div style="flex: 1;">
-                </div>
-                </div>
-                </div>
+                    <label class="toggle">
+                        <input type="checkbox" id="kb_enabled" {% if config.kb_enabled %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
+                    <span style="color: #e2e8f0; font-size: 0.85rem;" id="ds-kb-label">KB Files (pre-tokenized .txt)</span>
                 </div>
 
-                <hr style="border-color: #334155; margin-top: 0.5rem;">
-                <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
-                <div style="flex: 1;">
-                <h2 style="margin-top: 0;">🔑 Gate 2 Output</h2>
-                    <label for="protegrity_user" style="margin-top: 0.2rem;">Unprotect as</label>
-                    <select id="protegrity_user">{% for u in protegrity_users %}<option value="{{ u }}" {% if u == config.protegrity_user %}selected{% endif %}>{{ u }}</option>{% endfor %}</select>
+                <div class="toggle-row" id="ds-rag-row">
+                    <label class="toggle">
+                        <input type="checkbox" id="rag_enabled" {% if config.rag_enabled %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
+                    <span style="color: #e2e8f0; font-size: 0.85rem;" id="ds-rag-label">ChromaDB RAG Search</span>
                 </div>
-                <div style="flex: 1; display: flex; align-items: flex-end; padding-bottom: 0.2rem;">
-                    <div class="toggle-row"><label class="toggle"><input type="checkbox" id="show_trace" {% if config.show_trace %}checked{% endif %}><span class="slider"></span></label><span style="color: #e2e8f0; font-size: 0.85rem;">Show Pipeline Trace</span></div>
+
+                <div class="toggle-row" id="ds-kg-row">
+                    <label class="toggle">
+                        <input type="checkbox" id="kg_enabled" {% if config.kg_enabled %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
+                    <span style="color: #e2e8f0; font-size: 0.85rem;" id="ds-kg-label">Knowledge Graph (NetworkX)</span>
                 </div>
+
+                <hr style="border-color: #334155; margin-top: 1.5rem;">
+
+                <h2 style="margin-top: 1rem;">🛡️ Protegrity Settings</h2>
+
+                <div class="toggle-row">
+                    <label class="toggle">
+                        <input type="checkbox" id="guardrail_enabled" {% if config.guardrail_enabled %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
+                    <span style="color: #e2e8f0; font-size: 0.85rem;">Semantic Guardrail</span>
+                </div>
+
+                <label for="risk_threshold">Guardrail Risk Threshold (0 = allow all, 1 = block all)</label>
+                <input type="number" id="risk_threshold" value="{{ config.risk_threshold }}"
+                       min="0" max="1" step="0.05">
+
+                <div class="toggle-row">
+                    <label class="toggle">
+                        <input type="checkbox" id="discovery_enabled" {% if config.discovery_enabled %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
+                    <span style="color: #e2e8f0; font-size: 0.85rem;">PII Discovery</span>
+                </div>
+
+                <label for="classify_threshold">PII Classification Confidence (0 = detect everything, 1 = high confidence only)</label>
+                <input type="number" id="classify_threshold" value="{{ config.classify_threshold }}"
+                       min="0" max="1" step="0.05">
+
+                <label for="protegrity_user">Gate 2 Unprotect User</label>
+                <select id="protegrity_user">
+                    {% for u in protegrity_users %}
+                    <option value="{{ u }}" {% if u == config.protegrity_user %}selected{% endif %}>{{ u }}</option>
+                    {% endfor %}
+                </select>
+
+                <div class="toggle-row">
+                    <label class="toggle">
+                        <input type="checkbox" id="show_trace" {% if config.show_trace %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
+                    <span style="color: #e2e8f0; font-size: 0.85rem;">Show Pipeline Trace</span>
                 </div>
 
                 <button class="btn btn-primary" onclick="saveConfig()">💾 Save Configuration</button>
@@ -175,7 +213,7 @@
                 </div>
 
                 <p class="section-title">Current Configuration Summary</p>
-                <div style="background: #0f172a; border-radius: 6px; padding: 0.6rem; font-family: monospace; font-size: 0.75rem;">
+                <div style="background: #0f172a; border-radius: 6px; padding: 1rem; font-family: monospace; font-size: 0.8rem;">
                     <div>Orchestrator: <span style="color: #38bdf8;" id="summary-orch">{{ config.orchestrator }}</span></div>
                     <div>LLM: <span style="color: #a78bfa;" id="summary-llm">{{ config.llm_provider }}/{{ config.llm_model }}</span></div>
                     <div>Guardrail Threshold: <span style="color: #fbbf24;" id="summary-threshold">{{ config.risk_threshold }}</span></div>
@@ -183,8 +221,8 @@
                     <div>Discovery: <span style="color: #22c55e;" id="summary-discovery">{{ "ON" if config.discovery_enabled else "OFF" }}</span></div>
                     <div>Classify Confidence: <span style="color: #fbbf24;" id="summary-classify">{{ config.classify_threshold }}</span></div>
                     <div>Unprotect as: <span style="color: #fb923c;" id="summary-user">{{ config.protegrity_user }}</span></div>
-                    <div>PostgreSQL: <span style="color: #22c55e;" id="summary-kb">{{ "ON" if config.kb_enabled else "OFF" }}</span></div>
-                    <div>Vector Search: <span style="color: #22c55e;" id="summary-rag">{{ "ON" if config.rag_enabled else "OFF" }}</span></div>
+                    <div>KB Files: <span style="color: #22c55e;" id="summary-kb">{{ "ON" if config.kb_enabled else "OFF" }}</span></div>
+                    <div>RAG Search: <span style="color: #22c55e;" id="summary-rag">{{ "ON" if config.rag_enabled else "OFF" }}</span></div>
                     <div>Knowledge Graph: <span style="color: #22c55e;" id="summary-kg">{{ "ON" if config.kg_enabled else "OFF" }}</span></div>
                 </div>
             </div>
@@ -200,7 +238,7 @@
                     "Protegrity Gate 1 tokenizes all PII before the prompt ever reaches the LLM.",
                     "Gate 2 applies per-user detokenization policies \u2014 only authorized roles see real data.",
                     "Proves Protegrity\u2019s dual-gate works transparently with any LLM provider.",
-                    "Data sources: PostgreSQL only \u2014 pre-tokenized customer profiles."
+                    "Data sources: KB files only \u2014 pre-tokenized customer profiles."
                 ],
                 "data_sources": {"kb": true, "rag": false, "kg": false}
             },
@@ -208,7 +246,7 @@
                 "title": "LangGraph \u2014 Composable DAG Pipeline",
                 "points": [
                     "StateGraph with modular nodes \u2014 retrieval steps are composable, reorderable graph nodes.",
-                    "Combines all three technologies (PostgreSQL + ChromaDB + Kuzu) into a single pipeline.",
+                    "Combines all three data sources (KB + RAG + KG) into a single pipeline.",
                     "Protegrity tokens flow through every node \u2014 the graph never materializes raw PII.",
                     "Shows how DAG orchestration scales with Protegrity: add nodes without weakening protection.",
                     "Best for complex multi-source workflows where each step handles pre-protected data."
@@ -267,21 +305,8 @@
             }
         }
 
-        async function goToChat(url) {
-            await saveConfig();
-            window.location.href = url;
-        }
-
-        // Apply on page load; wire up customer buttons to save before navigating
-        document.addEventListener('DOMContentLoaded', function() {
-            updateInfoPanel();
-            document.querySelectorAll('.customer-btn').forEach(function(btn) {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    goToChat(btn.href);
-                });
-            });
-        });
+        // Apply on page load
+        document.addEventListener('DOMContentLoaded', function() { updateInfoPanel(); });
 
         async function saveConfig() {
             const config = {

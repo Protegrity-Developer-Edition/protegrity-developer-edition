@@ -6,10 +6,12 @@ Also provides LangChain-compatible ChatModel objects.
 """
 
 from __future__ import annotations
-import os
 from typing import List, Dict
 
-from config.orchestration_config import DEFAULT_MODELS
+from config.orchestration_config import (
+    LLM_PROVIDER, get_model_name,
+    OPENAI_API_KEY, ANTHROPIC_API_KEY, GROQ_API_KEY,
+)
 
 # ── Lazy module-level imports (patchable by tests) ───────────────────
 try:
@@ -28,37 +30,14 @@ except ImportError:
     Groq = None  # type: ignore
 
 
-def _get_provider_and_model():
-    """Read provider and model from os.environ at call time (not import time)."""
-    provider = os.environ.get("LLM_PROVIDER", "openai").lower()
-    model = os.environ.get("LLM_MODEL", "") or DEFAULT_MODELS.get(provider, "gpt-4o-mini")
-    return provider, model
-
-
-def _get_api_key(provider: str) -> str:
-    """Return the API key for the given provider, raising a clear error if missing."""
-    key_map = {
-        "openai": "OPENAI_API_KEY",
-        "anthropic": "ANTHROPIC_API_KEY",
-        "groq": "GROQ_API_KEY",
-    }
-    env_var = key_map.get(provider, "")
-    key = os.environ.get(env_var, "")
-    if not key:
-        raise ValueError(
-            f"{provider.capitalize()} API key not configured. "
-            f"Set {env_var} in your .env file or environment variables."
-        )
-    return key
-
-
 def get_llm():
     """
     Return a callable: fn(messages: List[Dict]) -> str
 
     messages format: [{"role": "system"|"user"|"assistant", "content": "..."}]
     """
-    provider, model = _get_provider_and_model()
+    provider = LLM_PROVIDER
+    model = get_model_name()
 
     if provider == "openai":
         return _openai_llm(model)
@@ -72,20 +51,20 @@ def get_llm():
 
 def get_llm_for_langchain():
     """Return a LangChain ChatModel instance for the configured provider."""
-    provider, model = _get_provider_and_model()
-    api_key = _get_api_key(provider)
+    provider = LLM_PROVIDER
+    model = get_model_name()
 
     if provider == "openai":
         from langchain_openai import ChatOpenAI
-        return ChatOpenAI(model=model, api_key=api_key, temperature=0)
+        return ChatOpenAI(model=model, api_key=OPENAI_API_KEY, temperature=0)
 
     elif provider == "anthropic":
         from langchain_anthropic import ChatAnthropic
-        return ChatAnthropic(model=model, api_key=api_key, temperature=0)
+        return ChatAnthropic(model=model, api_key=ANTHROPIC_API_KEY, temperature=0)
 
     elif provider == "groq":
         from langchain_groq import ChatGroq
-        return ChatGroq(model=model, api_key=api_key, temperature=0)
+        return ChatGroq(model=model, api_key=GROQ_API_KEY, temperature=0)
 
     else:
         raise ValueError(f"Unknown LLM provider: {provider}")
@@ -96,8 +75,7 @@ def get_llm_for_langchain():
 def _openai_llm(model: str):
     if openai is None:
         raise ImportError("pip install openai")
-    api_key = _get_api_key("openai")
-    client = openai.OpenAI(api_key=api_key)
+    client = openai.OpenAI(api_key=OPENAI_API_KEY)
 
     def call(messages: List[Dict]) -> str:
         resp = client.chat.completions.create(model=model, messages=messages, temperature=0)
@@ -110,8 +88,7 @@ def _openai_llm(model: str):
 def _anthropic_llm(model: str):
     if anthropic is None:
         raise ImportError("pip install anthropic")
-    api_key = _get_api_key("anthropic")
-    client = anthropic.Anthropic(api_key=api_key)
+    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
     def call(messages: List[Dict]) -> str:
         # Anthropic expects system prompt separately
@@ -139,8 +116,7 @@ def _anthropic_llm(model: str):
 def _groq_llm(model: str):
     if Groq is None:
         raise ImportError("pip install groq")
-    api_key = _get_api_key("groq")
-    client = Groq(api_key=api_key)
+    client = Groq(api_key=GROQ_API_KEY)
 
     def call(messages: List[Dict]) -> str:
         resp = client.chat.completions.create(model=model, messages=messages, temperature=0)

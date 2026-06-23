@@ -8,7 +8,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0;
                display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .login-container { display: flex; flex-direction: column; align-items: center; }
         .login-card { background: #1e293b; padding: 2.5rem; border-radius: 12px;
                       width: 380px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
         .login-card h1 { text-align: center; margin-bottom: 0.5rem; color: #38bdf8; font-size: 1.5rem; }
@@ -30,7 +29,6 @@
     </style>
 </head>
 <body>
-    <div class="login-container">
     <div class="login-card">
         <h1>🔧 TechnicalApp</h1>
         <p class="subtitle">Orchestration & Protegrity Configuration <span class="badge">TECH</span></p>
@@ -49,85 +47,13 @@
             <button type="submit">Sign In</button>
         </form>
 
+        <p class="hint">
+            Admin: <code>admin</code> / <code>Adm!n@S3cure2026</code><br>
+            Engineer: <code>engineer</code> / <code>Eng#Pr0tegrity!</code><br>
+            LangGraph: <code>langgraph</code> / <code>L@ngGr4ph!Demo</code><br>
+            CrewAI: <code>crewai</code> / <code>Cr3wAI#S3cure</code><br>
+            LlamaIndex: <code>llamaindex</code> / <code>Ll@m4Idx!2026</code>
+        </p>
     </div>
-
-    <div class="demo-credentials">
-        <div class="demo-credentials-header" onclick="toggleCredentials()">
-            <span>🔑 Demo Credentials</span>
-            <span class="demo-toggle-icon" id="demo-toggle-icon">▼</span>
-        </div>
-        <div class="demo-credentials-body" id="demo-credentials-body">
-            <p class="demo-hint">Click a row to auto-fill the login form</p>
-            <table class="demo-table">
-                <thead>
-                    <tr><th>Username</th><th>Password</th><th>Role</th><th>Orchestrator</th></tr>
-                </thead>
-                <tbody>
-                    <tr onclick="fillLogin('admin','Adm!n@S3cure2026')"><td>admin</td><td>Adm!n@S3cure2026</td><td>Technical Administrator</td><td>Any</td></tr>
-                    <tr onclick="fillLogin('engineer','Eng#Pr0tegrity!')"><td>engineer</td><td>Eng#Pr0tegrity!</td><td>Integration Engineer</td><td>Any</td></tr>
-                    <tr onclick="fillLogin('langgraph','L@ngGr4ph!Demo')"><td>langgraph</td><td>L@ngGr4ph!Demo</td><td>LangGraph Engineer</td><td>LangGraph</td></tr>
-                    <tr onclick="fillLogin('crewai','Cr3wAI#S3cure')"><td>crewai</td><td>Cr3wAI#S3cure</td><td>CrewAI Engineer</td><td>CrewAI</td></tr>
-                    <tr onclick="fillLogin('llamaindex','Ll@m4Idx!2026')"><td>llamaindex</td><td>Ll@m4Idx!2026</td><td>LlamaIndex Engineer</td><td>LlamaIndex</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<style>
-.demo-credentials {
-    margin-top: 16px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.14);
-    border-radius: 10px;
-    overflow: hidden;
-    width: 380px;
-}
-.demo-credentials-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: #e2e8f0;
-    background: rgba(255,255,255,0.04);
-    user-select: none;
-}
-.demo-credentials-header:hover { background: rgba(255,255,255,0.09); }
-.demo-toggle-icon { font-size: 0.75rem; transition: transform 0.2s; }
-.demo-credentials-body { padding: 12px 16px; display: none; }
-.demo-credentials-body.open { display: block; }
-.demo-hint { font-size: 0.78rem; color: #94a3b8; margin: 0 0 10px 0; }
-.demo-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
-.demo-table th {
-    text-align: left;
-    padding: 5px 8px;
-    border-bottom: 1px solid rgba(255,255,255,0.15);
-    color: #94a3b8;
-    font-weight: 600;
-}
-.demo-table td { padding: 6px 8px; color: #e2e8f0; }
-.demo-table tbody tr {
-    cursor: pointer;
-    transition: background 0.15s;
-}
-.demo-table tbody tr:hover { background: rgba(124,58,237,0.2); }
-</style>
-
-<script>
-function toggleCredentials() {
-    const body = document.getElementById('demo-credentials-body');
-    const icon = document.getElementById('demo-toggle-icon');
-    body.classList.toggle('open');
-    icon.textContent = body.classList.contains('open') ? '▲' : '▼';
-}
-function fillLogin(username, password) {
-    document.getElementById('username').value = username;
-    document.getElementById('password').value = password;
-    document.getElementById('username').focus();
-}
-</script>
 </body>
 </html>

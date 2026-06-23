@@ -1,0 +1,10 @@
+protegrity-ai-developer-python
+pandas
+requests
+scikit-learn
+matplotlib
+tqdm
+seaborn
+jupyterlab
+notebook
+ipywidgets

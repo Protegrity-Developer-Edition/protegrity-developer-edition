@@ -44,9 +44,8 @@ logger = logging.getLogger(__name__)
 _FULL_ENTITY_MAP = {**NAMED_ENTITY_MAP, **COMBINED_ENTITY_MAPPINGS}
 
 # SDK session resilience settings
-_SDK_MAX_RETRIES = 3
-_SDK_RETRY_DELAY = 1.0          # base delay — actual = base * 2^(attempt-1)
-_RATE_LIMIT_DELAY = 1.0         # base delay for rate-limit retries (429)
+_SDK_MAX_RETRIES = 2
+_SDK_RETRY_DELAY = 1.0
 
 _token_map = {}
 _token_map_lock = threading.Lock()
@@ -211,11 +210,7 @@ class ProtegrityGuard:
     def _sdk_call_with_retry(self, sdk_method_name: str, *args, **kwargs):
         """
         Call an SDK method (find_and_protect / find_and_unprotect) with
-        automatic SDK re-initialization on session errors and exponential
-        backoff on rate-limit errors.
-
-        Rate limits (Developer Edition public endpoints):
-          50 req/s, burst 100, 10 000/user, 1 MB payload.
+        automatic SDK re-initialization on session errors.
         """
         last_exception = None
         for attempt in range(1, _SDK_MAX_RETRIES + 1):
@@ -225,11 +220,6 @@ class ProtegrityGuard:
             except Exception as e:
                 last_exception = e
                 error_str = str(e).lower()
-
-                is_rate_limit = any(
-                    kw in error_str
-                    for kw in ("429", "rate limit", "too many", "throttl")
-                )
                 is_session_error = any(
                     kw in error_str
                     for kw in (
@@ -238,80 +228,44 @@ class ProtegrityGuard:
                         "reset", "broken", "closed",
                     )
                 )
-
-                if attempt >= _SDK_MAX_RETRIES:
-                    raise
-
-                if is_rate_limit:
-                    delay = _RATE_LIMIT_DELAY * (2 ** (attempt - 1))
-                    logger.warning(
-                        "Rate-limited on attempt %d/%d calling %s: %s "
-                        "— backing off %.1fs",
-                        attempt, _SDK_MAX_RETRIES, sdk_method_name, e, delay,
-                    )
-                    time.sleep(delay)
-                elif is_session_error:
+                if is_session_error and attempt < _SDK_MAX_RETRIES:
                     logger.warning(
                         "SDK session error on attempt %d/%d calling %s: %s "
                         "— re-initializing SDK",
-                        attempt, _SDK_MAX_RETRIES, sdk_method_name, e,
+                        attempt, _SDK_MAX_RETRIES, sdk_method_name, e
                     )
                     self._reinitialize_sdk()
                     if not self.sdk_available:
                         raise
-                    time.sleep(_SDK_RETRY_DELAY * (2 ** (attempt - 1)))
+                    time.sleep(_SDK_RETRY_DELAY * attempt)
                 else:
                     raise
         raise last_exception
 
     def _request_with_retry(self, method, url, retries=3, **kwargs):
-        """Fallback retry logic when protegrity_dev_edition_helper is not available.
-
-        Handles 401 (session expired) and 429 (rate limited) with
-        exponential backoff.  On 429, honours the Retry-After header
-        if present.
-        """
+        """Fallback retry logic when protegrity_dev_edition_helper is not available."""
         last_exception = None
         for attempt in range(1, retries + 1):
             try:
                 resp = requests.request(method, url, **kwargs)
-
-                if resp.status_code == 429:
-                    retry_after = resp.headers.get("Retry-After")
-                    delay = (
-                        float(retry_after)
-                        if retry_after
-                        else _RATE_LIMIT_DELAY * (2 ** (attempt - 1))
-                    )
-                    logger.warning(
-                        "429 rate-limited on attempt %d/%d to %s "
-                        "— backing off %.1fs",
-                        attempt, retries, url, delay,
-                    )
-                    if attempt < retries:
-                        time.sleep(delay)
-                        continue
-                    resp.raise_for_status()
-
                 if resp.status_code == 401:
                     logger.warning(
                         "401 on attempt %d/%d to %s — retrying",
-                        attempt, retries, url,
+                        attempt, retries, url
                     )
                     if attempt < retries:
-                        time.sleep(_SDK_RETRY_DELAY * (2 ** (attempt - 1)))
+                        time.sleep(1.0 * attempt)
                         continue
-
                 resp.raise_for_status()
                 return resp
             except requests.RequestException as e:
                 last_exception = e
                 logger.warning(
                     "Request to %s failed (attempt %d/%d): %s",
-                    url, attempt, retries, e,
+                    url, attempt, retries, e
                 )
                 if attempt < retries:
-                    time.sleep(_SDK_RETRY_DELAY * (2 ** (attempt - 1)))
+                    time.sleep(1.0 * attempt)
         raise last_exception
 
     def semantic_guardrail_check(self, text, *, threshold=0.7) -> GateResult:
@@ -393,12 +347,7 @@ class ProtegrityGuard:
                 })
                 all_responses[processor] = {"error": str(e)}
 
-        # Threshold is the sole decision maker: accept if score <= threshold
-        accepted = max_risk_score <= threshold
-        if final_outcome == "rejected" and accepted:
-            final_outcome = "accepted"
-            logger.info("Guardrail API returned 'rejected' but score %.4f is below threshold %.2f — accepting",
-                        max_risk_score, threshold)
+        accepted = (final_outcome != "rejected") and (max_risk_score <= threshold)
 
         return GateResult(
             original_text=text, transformed_text=text,
@@ -531,17 +480,7 @@ class ProtegrityGuard:
                 )
                 return token_value
 
-        # Small delay between per-token SDK calls to respect API rate limits
-        _unprotect_call_count = 0
-
-        def _replace_token_throttled(match):
-            nonlocal _unprotect_call_count
-            _unprotect_call_count += 1
-            if _unprotect_call_count > 1:
-                time.sleep(0.05)
-            return _replace_token(match)
-
-        result = re.sub(r'\[([A-Z_]+)\](.*?)\[/\1\]', _replace_token_throttled, text)
+        result = re.sub(r'\[([A-Z_]+)\](.*?)\[/\1\]', _replace_token, text)
         return GateResult(
             original_text=text, transformed_text=result,
             elements_found=[], metadata={},

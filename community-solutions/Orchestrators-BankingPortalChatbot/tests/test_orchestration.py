@@ -5,8 +5,10 @@ Runs WITHOUT live Protegrity services, LLM APIs, or ChromaDB.
 All external dependencies are mocked.
 
 Usage:
-    pip install pytest kuzu
-    python -m pytest tests/test_orchestration.py -v"""
+    cd /home/azure_usr/protegrity_ai_integrations/protegrity_demo/orchestration/BankingPortalChatbot
+    pip install pytest networkx
+    python -m pytest tests/test_orchestration.py -v
+"""
 
 import os
 import sys
@@ -20,10 +22,10 @@ if _ROOT not in sys.path:
 
 # Check optional deps
 try:
-    import kuzu
-    HAS_KUZU = True
+    import networkx as nx
+    HAS_NETWORKX = True
 except ImportError:
-    HAS_KUZU = False
+    HAS_NETWORKX = False
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -94,50 +96,57 @@ class TestBaseOrchestrator:
 # 3. Knowledge Graph tests
 # ═══════════════════════════════════════════════════════════════════════
 
-@pytest.mark.skipif(not HAS_KUZU, reason="kuzu not installed")
+@pytest.mark.skipif(not HAS_NETWORKX, reason="networkx not installed")
 class TestKnowledgeGraph:
 
-    def test_get_graph_wrapper(self):
+    def test_query_customer_empty_graph(self):
         import common.knowledge_graph as kg
-        G = kg.get_graph()
-        assert hasattr(G, "number_of_nodes")
-        assert hasattr(G, "number_of_edges")
-        assert G.number_of_nodes() > 0
-        assert G.number_of_edges() > 0
+        kg._GRAPH = nx.DiGraph()
+        result = kg.query_customer("CUST-999999")
+        assert result == {}
+        kg._GRAPH = None
 
     def test_query_customer_found(self):
         import common.knowledge_graph as kg
-        result = kg.query_customer("CUST-100000")
-        assert result.get("customer_id") == "CUST-100000"
-        assert "name" in result
-        assert "relations" in result
-        # Should have at least one relation type
-        assert len(result["relations"]) > 0
 
-    def test_query_customer_not_found(self):
-        import common.knowledge_graph as kg
-        result = kg.query_customer("CUST-999999")
-        assert result == {}
+        G = nx.DiGraph()
+        G.add_node("CUST-100000", node_type="Customer", name="[PERSON]Xk9[/PERSON]")
+        G.add_node("ACC-001", node_type="Account", balance=5000)
+        G.add_edge("CUST-100000", "ACC-001", relation="HAS_ACCOUNT")
+        kg._GRAPH = G
 
-    def test_query_customer_has_accounts(self):
-        import common.knowledge_graph as kg
         result = kg.query_customer("CUST-100000")
-        assert "HAS_ACCOUNT" in result.get("relations", {})
-        accounts = result["relations"]["HAS_ACCOUNT"]
-        assert len(accounts) > 0
-        assert accounts[0]["node_type"] == "Account"
+        assert result["customer_id"] == "CUST-100000"
+        assert "[PERSON]" in result["name"]
+        assert "HAS_ACCOUNT" in result["relations"]
+        assert len(result["relations"]["HAS_ACCOUNT"]) == 1
+        kg._GRAPH = None
 
     def test_search_nodes_with_type(self):
         import common.knowledge_graph as kg
-        results = kg.search_nodes("CUST-100000", node_type="Customer")
-        assert len(results) >= 1
-        assert any(r["id"] == "CUST-100000" for r in results)
+
+        G = nx.DiGraph()
+        G.add_node("CUST-100000", node_type="Customer", name="[PERSON]Xk9[/PERSON]")
+        G.add_node("CUST-100001", node_type="Customer", name="[PERSON]Ab3[/PERSON]")
+        G.add_node("ACC-001", node_type="Account", balance=5000)
+        kg._GRAPH = G
+
+        results = kg.search_nodes("Xk9", node_type="Customer")
+        assert len(results) == 1
+        assert results[0]["id"] == "CUST-100000"
+        kg._GRAPH = None
 
     def test_search_nodes_no_type_filter(self):
         import common.knowledge_graph as kg
-        # Search for a transaction merchant that exists in the seeded data
-        results = kg.search_nodes("CUST-100")  # matches multiple customers
-        assert len(results) > 0
+
+        G = nx.DiGraph()
+        G.add_node("CUST-100000", node_type="Customer", name="test")
+        G.add_node("ACC-001", node_type="Account", balance=5000, note="test")
+        kg._GRAPH = G
+
+        results = kg.search_nodes("test")
+        assert len(results) == 2
+        kg._GRAPH = None
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -342,7 +351,7 @@ class TestStructuralImports:
         from common.rag_retriever import retrieve, rebuild_index
         assert callable(retrieve)
 
-    @pytest.mark.skipif(not HAS_KUZU, reason="kuzu not installed")
+    @pytest.mark.skipif(not HAS_NETWORKX, reason="networkx not installed")
     def test_import_kg(self):
         from common.knowledge_graph import get_graph, query_customer, search_nodes
         assert callable(query_customer)

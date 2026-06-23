@@ -69,23 +69,6 @@ The chatbot implements a **Dual-Gate** security model where all user input and L
 | **Data Protection** | SDK | `sdk.find_and_unprotect(text)` | Detokenization (restore PII) |
 | **Protector** | SDK | `Protector().create_session(user).protect(value, de)` | Offline batch tokenization |
 
-### API Rate Limits (Developer Edition — Public Endpoints)
-
-| Limit | Value |
-|---|---|
-| Request Rate | 50 requests/second |
-| Burst | up to 100 requests |
-| Quota | 10,000 requests per user |
-| Max Payload Size | 1 MB |
-
-These limits apply to the **public** Developer Edition endpoints only — private
-(self-hosted) endpoints are not subject to these limits.
-
-The SDK calls (`find_and_protect`, `find_and_unprotect`) and REST API calls
-(Semantic Guardrail, Data Discovery) go through `_sdk_call_with_retry()` and
-`_request_with_retry()` in `protegrity_guard.py`, which include exponential
-backoff to handle transient rate-limit and session errors.
-
 ---
 
 ## 3. File Map — Where Protegrity Code Lives

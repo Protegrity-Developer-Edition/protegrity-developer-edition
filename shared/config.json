@@ -1,0 +1,12 @@
+{
+    "masking_char": "#",
+    "named_entity_map": {
+        "PERSON": "PERSON",
+        "LOCATION": "LOCATION",
+        "SOCIAL_SECURITY_ID": "SSN",
+        "PHONE_NUMBER": "PHONE",
+        "AGE": "AGE",
+        "USER_NAME": "USERNAME"
+    },
+    "method": "redact"
+}

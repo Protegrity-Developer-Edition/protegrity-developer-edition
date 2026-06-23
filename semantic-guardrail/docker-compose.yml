@@ -1,0 +1,17 @@
+networks:
+  protegrity-network:
+    name: ${DOCKER_NETWORK_NAME:-protegrity-network}
+    external: false
+
+services:
+  semantic-guardrail-service:
+    image: ${DOCKER_SEMANTIC_GUARDRAIL_IMAGE:-${REGISTRY:-ghcr.io/protegrity-ai-developer-edition}/semantic-guardrail:${SEMANTIC_GUARDRAIL_TAG:-1.1.1-36-1b3de114}}
+    container_name: semantic_guardrail
+    ports:
+      - "${SGR_PORT:-8581}:8001"
+    networks:
+      - protegrity-network
+    environment:
+      - LOG_LEVEL=${SEMANTIC_GUARDRAIL_LOG_LEVEL:-WARNING}
+      - HF_HUB_OFFLINE=1
+      - TRANSFORMERS_OFFLINE=1

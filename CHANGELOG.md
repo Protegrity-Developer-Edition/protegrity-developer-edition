@@ -2,6 +2,49 @@
 
 All notable changes to the Protegrity AI Developer Edition project will be documented in this file.
 
+## [1.2.0] - 2026-06-30
+
+This release reorganizes the repository around self-contained feature directories, adds a new **Anonymization** feature, refreshes Data Discovery and Semantic Guardrail, and introduces a guided path for graduating your application from Developer Edition to **Team Edition**.
+
+### 🎉 Added
+
+#### Anonymization (new feature)
+- New `anonymization/` feature directory with its own `docker-compose.yml`, README, and an interactive `anonymization.ipynb` notebook.
+- Sample healthcare dataset and a privacy/utility trade-off walkthrough to demonstrate field-level anonymization.
+
+#### Developer Edition → Team Edition migration
+- New **"Moving from Developer Edition to Team Edition"** guide in the README covering the `pty-migrate` CLI (`check` / `create-policy`), Cloud Protect connection (`PTY_CP_HOST`), supported auth modes, and the optional `~/.protegrity/config.yaml`.
+- The same Python and Java sample code runs unchanged against Team Edition — only the endpoint, auth mode, and where the policy lives change.
+
+#### More interactive notebooks
+- **Data Discovery**: new Jupyter notebooks for text classification, tabular classification, and redaction (`data-discovery/samples/jupyter/`).
+- **Data Protection**: new getting-started protect/unprotect notebook (`data-protection/samples/python/sample-app-protect-unprotect/`), runnable directly in Binder.
+- **Semantic Guardrail** and **Synthetic Data**: refreshed sample notebooks with updated branding and images.
+
+### 🔄 Changed
+
+#### Feature-based repository layout
+- The repository is reorganized so each feature (`data-discovery/`, `data-protection/`, `semantic-guardrail/`, `synthetic-data/`, `anonymization/`) is self-contained with its **own `docker-compose.yml`**, samples, data, and README.
+- The single root `docker-compose.yml` is replaced by per-feature compose files — start only the services you need (e.g. `cd semantic-guardrail && docker compose up -d`).
+- Cross-feature assets consolidated under `shared/` (`config.json`, `requirements.txt`, `data/`).
+
+#### Data Discovery 2.0
+- Updated to the Data Discovery 2.0 service with improved classification and refreshed entity-to-data-element mappings.
+
+#### Platform support
+- **Python**: minimum version lowered to **3.11** (from 3.12), supporting 3.11 and above.
+- Binder runtime and `requirements.txt` moved into `binder/` and trimmed to the notebook stack.
+
+### 📚 Documentation
+- README restructured for the feature-based layout, with per-feature run instructions for both Python and Java samples.
+- Added a **Service Health** badge linking to the [Developer Edition status page](https://www.protegrity.com/developers/status).
+- Corrected the auth-mode guidance to the actually supported modes (`cognito`, `aws_iam`, `bearer_token`, `mtls`, `none`).
+
+### ⚠️ Migration notes
+- If you previously ran `docker compose up` from the repository root, switch to the per-feature directory (for example `cd semantic-guardrail && docker compose up -d`). There is no longer a root `docker-compose.yml`.
+
+---
+
 ## [1.1.0] - 2025-12-15
 
 ### 🎉 Major New Features

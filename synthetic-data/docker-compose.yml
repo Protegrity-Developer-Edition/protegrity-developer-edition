@@ -1,0 +1,54 @@
+networks:
+  protegrity-network:
+    name: ${DOCKER_NETWORK_NAME:-protegrity-network}
+    external: false
+
+services:
+
+  pty-syndb-service:
+    image: ${DOCKER_PTY_POSTGRES_IMAGE:-${REGISTRY:-ghcr.io/protegrity-ai-developer-edition}/postgres/17:${PTY_POSTGRES_TAG:-latest}}
+    hostname: pty-postgres
+    user: postgres
+    container_name: pty-postgres
+    ports:
+      - "5432:5432"
+    command: sh /home/postgres/start.sh
+    post_start:
+      - command:
+          - /bin/bash
+          - -c
+          - |
+            sh /home/postgres/configure.sh jobstateuser jobstatepsw jobstatedb
+            sh /home/postgres/configure.sh mlopsuser mlopspsw mlopsdb
+        user: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - protegrity-network
+
+  synthetic-data-service:
+      image: ${DOCKER_SYNTHETIC_DATA_IMAGE:-${REGISTRY:-ghcr.io/protegrity-ai-developer-edition}/synthetic-data:${SYNTHETIC_DATA_TAG:-2.0.0-24-68903d95-dev}}
+      container_name: synthetic-data
+      environment:
+      - PYTHONPATH=/home/synuser/app
+      volumes:
+        - ./samples/python/sample-app-synthetic-data/datastore:/home/synuser/app/datastore:rw
+      ports:
+        - "${SYN_PORT:-8000}:8000"
+      healthcheck:
+        test: ["CMD", "curl", "-fsS", "http://localhost:${SYN_PORT:-8000}/pty/syntheticdata/v2/health"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+        start_period: 60s
+      restart: unless-stopped
+      depends_on:
+        - pty-syndb-service
+      networks:
+        - protegrity-network
+
+volumes:
+  store:

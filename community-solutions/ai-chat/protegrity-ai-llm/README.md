@@ -1,4 +1,9 @@
 # Protegrity AI (LLM)
+
+![Static Badge](https://img.shields.io/badge/With_Protegrity-009245?style=flat&label=Built&labelColor=3a3a3e&link=%3Cobject%3Eprotegrity.com)
+![Python](https://img.shields.io/badge/Python-3.11+-009245?style=flat&labelColor=3a3a3e&logo=python&logoColor=white)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](https://github.com/Protegrity-AI-Developer-Edition/protegrity-ai-developer-edition/blob/main/LICENSE)
+
 ## What this example does
 
 This example provides a secure, full-stack LLM chatbot that scans user prompts and model responses for sensitive data, applies guardrail checks, and enforces privacy controls before content is returned to users.
@@ -76,7 +81,7 @@ Diagram and implementation docs:
 ### Prereqs
 
 - Docker + Docker Compose
-- Python 3.12+
+- Python 3.10+
 - Node.js 20+ (for local frontend workflow)
 
 ### Setup (env vars)

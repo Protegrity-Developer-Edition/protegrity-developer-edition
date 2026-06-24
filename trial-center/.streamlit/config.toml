@@ -1,0 +1,13 @@
+[client]
+# Hide Streamlit's built-in toolbar/hamburger menu (theme switcher, Rerun, About,
+# Get help, Made-with-Streamlit branding). The Trial Center is a packaged
+# product surface, not a developer playground, so end users should not see
+# Streamlit-specific controls.
+toolbarMode = "minimal"
+showErrorDetails = false
+
+[browser]
+gatherUsageStats = false
+
+[server]
+headless = true
